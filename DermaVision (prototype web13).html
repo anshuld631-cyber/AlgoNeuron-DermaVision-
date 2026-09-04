@@ -1,0 +1,1752 @@
+<!DOCTYPE html>
+<html lang="hi" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#1B2E3D">
+  <meta name="color-scheme" content="light">
+  <title>DermaVision - AI-Powered Dermatological Care</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Curated Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Naskh+Arabic:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Noto+Sans+Kannada:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        screens: {
+          'xs': '320px',
+          'sm': '480px',
+          'md': '768px',
+          'lg': '1024px',
+          'xl': '1280px',
+          '2xl': '1536px',
+        },
+        extend: {
+          colors: {
+            brandTeal: '#4B7B8C',
+            brandPeach: '#D98A6C',
+            brandNavy: '#1B2E3D',
+            brandBg: '#F9FAF9',
+            brandAlertRed: '#DC2626',
+            brandWarningYellow: '#D97706',
+            brandSuccessGreen: '#16A34A',
+          },
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans Devanagari', 'Noto Naskh Arabic', 'Noto Sans Bengali', 'Noto Sans Tamil', 'Noto Sans Telugu', 'Noto Sans Kannada', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --sat: env(safe-area-inset-top, 0px);
+      --sab: env(safe-area-inset-bottom, 0px);
+      --sal: env(safe-area-inset-left, 0px);
+      --sar: env(safe-area-inset-right, 0px);
+    }
+    
+    body {
+      padding-top: var(--sat);
+      padding-bottom: var(--sab);
+      padding-left: var(--sal);
+      padding-right: var(--sar);
+      min-height: 100vh;
+      min-height: 100dvh;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    button, select, input, label[role="button"] {
+      min-height: 48px;
+    }
+
+    .pulse-ring {
+      animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(217, 138, 108, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 14px rgba(217, 138, 108, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(217, 138, 108, 0); }
+    }
+
+    details > summary {
+      list-style: none;
+    }
+    details > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    [dir="rtl"] select {
+      padding-left: 1.75rem;
+      padding-right: 0.75rem;
+    }
+  </style>
+</head>
+<body class="bg-brandBg text-brandNavy font-sans flex flex-col antialiased selection:bg-brandPeach selection:text-white">
+
+  <!-- TOP UTILITY BAR -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm w-full">
+    <div class="max-w-4xl mx-auto px-4 py-2 flex items-center justify-between gap-2">
+      <!-- Logo Container -->
+      <div class="flex items-center gap-2.5 sm:gap-3 flex-shrink-0">
+        <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 p-1 flex items-center justify-center shadow-sm overflow-hidden flex-shrink-0">
+          <img src="https://i.ibb.co/mrwmQR72/logo.jpg" alt="DermaVision Logo" class="w-full h-full object-contain" onerror="this.style.display='none'; document.getElementById('navSvgFallback').style.display='block';">
+          <svg id="navSvgFallback" viewBox="0 0 200 200" class="w-full h-full hidden">
+            <path d="M100,45 C82,18 42,22 36,65 C32,92 58,125 100,165 C142,125 168,92 164,65 C158,22 118,18 100,45 Z" fill="none" stroke="#D98A6C" stroke-width="5" />
+            <path d="M52,42 C85,45 105,82 105,102 C85,102 52,80 52,42 Z" fill="none" stroke="#4B7B8C" stroke-width="5" />
+            <path d="M102,102 C102,122 88,140 68,140 C50,140 40,126 40,110 C40,90 56,76 76,76 C98,76 114,94 114,116 C114,142 92,160 66,160" fill="none" stroke="#4B7B8C" stroke-width="4.5" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg font-black tracking-tight text-brandNavy leading-none">DermaVision</h1>
+          <p class="text-[9px] tracking-wider font-bold text-brandPeach uppercase mt-0.5">AI DERMATOLOGICAL CARE</p>
+        </div>
+      </div>
+
+      <!-- TTS & Multilingual Selector -->
+      <div class="flex items-center gap-2">
+        <button id="ttsHeaderBtn" onclick="speakCurrentView()" class="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-brandNavy rounded-lg text-xs font-bold transition border border-slate-300 active:scale-95" aria-label="Listen instructions">
+          <i data-lucide="volume-2" class="w-4 h-4 text-brandTeal"></i>
+          <span id="txtVoiceAssist">सुनिए</span>
+        </button>
+
+        <div class="relative">
+          <select id="languageSelect" onchange="changeLanguage(this.value)" class="bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-bold text-brandNavy focus:outline-none focus:border-brandTeal shadow-sm pr-7 cursor-pointer max-w-[140px] sm:max-w-none">
+            <option value="hi" selected>हिंदी (Hindi)</option>
+            <option value="en">English</option>
+            <option value="ar">العربية (Arabic)</option>
+            <option value="bn">বাংলা (Bengali)</option>
+            <option value="ta">தமிழ் (Tamil)</option>
+            <option value="te">తెలుగు (Telugu)</option>
+            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- REGION BANNER -->
+  <div id="geoNotification" class="bg-brandTeal/10 border-b border-brandTeal/20 px-3 py-1.5 text-xs text-center text-slate-600 flex items-center justify-center gap-1.5">
+    <i data-lucide="map-pin" class="w-3.5 h-3.5 text-brandTeal flex-shrink-0"></i>
+    <span id="geoText">स्थान का पता लगाया जा रहा है...</span>
+  </div>
+
+  <!-- MAIN VIEW -->
+  <main class="max-w-2xl mx-auto px-4 py-6 w-full flex-grow flex flex-col justify-start">
+
+    <!-- HERO EMBLEM -->
+    <div class="flex flex-col items-center justify-center text-center mb-6">
+      <div class="w-28 h-28 p-2.5 bg-white rounded-3xl shadow-sm border border-slate-200 flex items-center justify-center mb-3 overflow-hidden">
+        <img src="https://i.ibb.co/mrwmQR72/logo.jpg" alt="DermaVision Logo" class="w-full h-full object-contain" onerror="this.style.display='none'; document.getElementById('heroSvgFallback').style.display='block';">
+        <svg id="heroSvgFallback" viewBox="0 0 200 200" class="w-full h-full hidden">
+          <defs>
+            <linearGradient id="hTeal" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stop-color="#1B2E3D" />
+              <stop offset="100%" stop-color="#4B7B8C" />
+            </linearGradient>
+            <linearGradient id="hPeach" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#4B7B8C" />
+              <stop offset="100%" stop-color="#D98A6C" />
+            </linearGradient>
+          </defs>
+          <path d="M100,45 C82,18 42,22 36,65 C32,92 58,125 100,165 C142,125 168,92 164,65 C158,22 118,18 100,45 Z" fill="none" stroke="url(#hPeach)" stroke-width="4.5" stroke-linecap="round" />
+          <circle cx="105" cy="52" r="4" fill="#4B7B8C" />
+          <circle cx="128" cy="40" r="4.5" fill="#D98A6C" />
+          <circle cx="135" cy="72" r="7.5" fill="#D98A6C" />
+          <line x1="105" y1="52" x2="128" y2="40" stroke="#4B7B8C" stroke-width="2.5" />
+          <line x1="128" y1="40" x2="135" y2="72" stroke="#D98A6C" stroke-width="3" />
+          <path d="M52,42 C85,45 105,82 105,102 C85,102 52,80 52,42 Z" fill="none" stroke="url(#hTeal)" stroke-width="4.5" />
+          <path d="M102,102 C102,122 88,140 68,140 C50,140 40,126 40,110 C40,90 56,76 76,76 C98,76 114,94 114,116 C114,142 92,160 66,160" fill="none" stroke="url(#hTeal)" stroke-width="4.5" stroke-linecap="round" />
+        </svg>
+      </div>
+      <h2 class="text-2xl font-black text-brandNavy tracking-wider">DermaVision</h2>
+      <p class="text-[10px] font-bold text-brandPeach uppercase tracking-[0.2em] mt-0.5">AI-POWERED DERMATOLOGICAL CARE</p>
+    </div>
+
+    <!-- STEP 1: CAPTURE & UPLOAD -->
+    <section id="step1-upload" class="space-y-5">
+      <div class="text-center space-y-1">
+        <span class="inline-block bg-brandPeach/20 text-brandPeach px-3 py-0.5 rounded-full text-xs font-bold tracking-wide uppercase" id="badgeStep1">
+          चरण 1
+        </span>
+        <h3 id="titleStep1" class="text-2xl font-extrabold text-brandNavy">
+          चमड़ी की तस्वीर लें
+        </h3>
+        <p id="descStep1" class="text-slate-600 text-xs sm:text-sm max-w-md mx-auto">
+          प्रभावित त्वचा की साफ़ और नज़दीक से फ़ोटो लें ताकि AI तुरंत जांच कर सके।
+        </p>
+      </div>
+
+      <!-- Hero Capture Box -->
+      <div class="bg-white rounded-3xl border-2 border-dashed border-slate-300 p-6 sm:p-8 text-center space-y-6 shadow-sm">
+        <div class="w-20 h-20 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+          <i data-lucide="camera" class="w-9 h-9"></i>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <!-- Live Camera Button -->
+          <button type="button" onclick="initiateCameraTrigger()" class="flex items-center justify-center gap-2.5 bg-brandTeal hover:bg-brandTeal/90 text-white font-bold py-3.5 px-5 rounded-2xl shadow-sm cursor-pointer transition active:scale-95 text-sm sm:text-base">
+            <i data-lucide="camera" class="w-5 h-5 flex-shrink-0"></i>
+            <span id="btnCamera">कैमरा खोलें</span>
+          </button>
+
+          <!-- Upload from Device -->
+          <label class="flex items-center justify-center gap-2.5 bg-white border border-slate-300 hover:border-slate-400 text-brandNavy font-bold py-3.5 px-5 rounded-2xl cursor-pointer transition active:scale-95 text-sm sm:text-base">
+            <i data-lucide="image" class="w-5 h-5 text-brandPeach flex-shrink-0"></i>
+            <span id="btnUpload">गैलरी से चुनें</span>
+            <input id="nativeFileInput" type="file" accept="image/*" class="hidden" onchange="handleImageSelection(event)">
+          </label>
+        </div>
+
+        <input id="nativeCameraFallback" type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImageSelection(event)">
+
+        <!-- Demo Presets -->
+        <div class="pt-4 border-t border-slate-100">
+          <p class="text-[11px] font-semibold text-slate-400 mb-2.5" id="lblDemo">त्वरित परीक्षण सिमुलेशन (Demo Presets):</p>
+          <div class="flex flex-wrap justify-center gap-2">
+            <button onclick="simulateCondition('cellulitis')" id="demoHigh" class="text-xs bg-red-50 text-brandAlertRed border border-red-200 px-3 py-1.5 rounded-lg font-bold hover:bg-red-100 transition">
+              गंभीर (Cellulitis)
+            </button>
+            <button onclick="simulateCondition('eczema')" id="demoMed" class="text-xs bg-amber-50 text-brandWarningYellow border border-amber-200 px-3 py-1.5 rounded-lg font-bold hover:bg-amber-100 transition">
+              मध्यम (Eczema)
+            </button>
+            <button onclick="simulateCondition('normal')" id="demoLow" class="text-xs bg-green-50 text-brandSuccessGreen border border-green-200 px-3 py-1.5 rounded-lg font-bold hover:bg-green-100 transition">
+              सामान्य (Rash)
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 2: PROCESSING STATE -->
+    <section id="step2-loading" class="hidden text-center py-12 space-y-5">
+      <div class="relative w-24 h-24 mx-auto">
+        <div class="w-full h-full rounded-full border-4 border-slate-200 border-t-brandTeal animate-spin"></div>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <i data-lucide="cpu" class="w-8 h-8 text-brandPeach animate-pulse"></i>
+        </div>
+      </div>
+      <div class="space-y-1.5">
+        <h3 id="txtAnalyzingTitle" class="text-lg sm:text-xl font-black text-brandNavy">तस्वीर की जांच हो रही है...</h3>
+        <p id="txtAnalyzingSubtitle" class="text-xs sm:text-sm text-slate-500">DermaVision AI मॉडल गुणवत्ता और लक्षणों का विश्लेषण कर रहा है</p>
+      </div>
+      <div class="w-44 h-2 bg-slate-200 rounded-full mx-auto overflow-hidden">
+        <div class="bg-brandPeach h-full animate-[pulse_1s_ease-in-out_infinite]" style="width: 75%"></div>
+      </div>
+    </section>
+
+    <!-- STEP 3: TRIAGE RESULT REPORT -->
+    <section id="step3-result" class="hidden space-y-5">
+      <div id="triageCard" class="bg-white rounded-3xl p-5 sm:p-7 border-2 shadow-xl space-y-5">
+        
+        <!-- Header: Severity Banner -->
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div id="triageIconWrapper" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-white text-2xl font-bold flex-shrink-0"></div>
+            <div>
+              <span id="triageSeverityBadge" class="text-[10px] sm:text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-md"></span>
+              <h3 id="triageConditionName" class="text-xl sm:text-2xl font-black text-brandNavy mt-0.5 leading-tight"></h3>
+            </div>
+          </div>
+          <button onclick="speakResult()" class="p-2.5 sm:p-3 bg-slate-100 hover:bg-slate-200 rounded-xl text-brandNavy border border-slate-300 flex-shrink-0" title="Listen Result">
+            <i data-lucide="volume-2" class="w-5 h-5 text-brandTeal"></i>
+          </button>
+        </div>
+
+        <!-- Lesion Preview Thumbnail & Confidence -->
+        <div class="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+          <img id="scannedImagePreview" src="" alt="Scanned Lesion" class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover border border-slate-200 flex-shrink-0">
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+              <span id="lblConfidence" class="truncate">AI सटीकता</span>
+              <span id="triageConfidenceValue">94.8%</span>
+            </div>
+            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+              <div id="confidenceBar" class="bg-brandTeal h-full" style="width: 95%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recommended Medical Action Statement -->
+        <div class="space-y-1.5">
+          <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400" id="lblGuidance">सलाह और आवश्यक कदम:</h4>
+          <p id="triageClinicalAdvice" class="text-xs sm:text-sm font-medium text-slate-800 leading-relaxed"></p>
+        </div>
+
+        <!-- LEARN MORE SECTION (Accordion Dropdown) -->
+        <div class="pt-1">
+          <details id="learnMoreDetails" class="group border border-slate-200 rounded-2xl bg-slate-50/70 p-3.5 transition-all duration-200">
+            <summary class="flex items-center justify-between cursor-pointer font-bold text-xs sm:text-sm text-brandNavy select-none">
+              <div class="flex items-center gap-2">
+                <i data-lucide="book-open" class="w-4 h-4 text-brandTeal flex-shrink-0"></i>
+                <span id="lblLearnMoreTitle">इस बीमारी के बारे में और जानें (Learn More)</span>
+              </div>
+              <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500 transition-transform duration-200 group-open:rotate-180"></i>
+            </summary>
+            
+            <div class="mt-3.5 pt-3 border-t border-slate-200/60 text-xs space-y-3">
+              <div>
+                <h5 class="font-bold text-brandNavy flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
+                  <i data-lucide="help-circle" class="w-3.5 h-3.5 text-brandPeach"></i>
+                  <span id="lblCausesHeading">मुख्य कारण (Causes):</span>
+                </h5>
+                <p id="txtConditionCauses" class="text-slate-600 mt-1 pl-5 leading-relaxed"></p>
+              </div>
+
+              <div>
+                <h5 class="font-bold text-brandAlertRed flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
+                  <i data-lucide="alert-octagon" class="w-3.5 h-3.5 text-brandAlertRed"></i>
+                  <span id="lblRedFlagsHeading">खतरे के लक्षण (Warning Signs):</span>
+                </h5>
+                <p id="txtConditionRedFlags" class="text-slate-600 mt-1 pl-5 leading-relaxed"></p>
+              </div>
+
+              <div>
+                <h5 class="font-bold text-brandSuccessGreen flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
+                  <i data-lucide="shield" class="w-3.5 h-3.5 text-brandSuccessGreen"></i>
+                  <span id="lblPreventionHeading">बचाव और देखभाल (Prevention):</span>
+                </h5>
+                <p id="txtConditionPrevention" class="text-slate-600 mt-1 pl-5 leading-relaxed"></p>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <!-- INTERACTIVE AI CLINICAL TRIAGE QUESTIONS -->
+        <div class="pt-3 border-t border-slate-200 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <i data-lucide="clipboard-check" class="w-4 h-4 text-brandTeal"></i>
+              <h4 id="lblQuestionsHeader" class="text-xs sm:text-sm font-extrabold text-brandNavy">
+                सटीक जांच के लिए 3 प्रश्नों के उत्तर दें:
+              </h4>
+            </div>
+            <button type="button" onclick="speakQuestions()" class="text-slate-400 hover:text-brandTeal transition" title="Listen Questions">
+              <i data-lucide="volume-1" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <div class="space-y-2.5">
+            <!-- Question 1: Systemic Reaction / Fever -->
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+              <p id="q1Text" class="text-xs font-bold text-brandNavy leading-tight">
+                1. क्या आपको बुखार, कपकपी या अत्यधिक कमजोरी महसूस हो रही है?
+              </p>
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" onclick="setQuestionAnswer(1, 1)" id="btnQ1Yes" class="q-btn-1 py-2 px-3 rounded-xl border text-xs font-bold border-slate-300 bg-white text-slate-700 hover:border-brandTeal transition">
+                  <span id="optYes1">हाँ (Yes)</span>
+                </button>
+                <button type="button" onclick="setQuestionAnswer(1, 0)" id="btnQ1No" class="q-btn-1 py-2 px-3 rounded-xl border text-xs font-bold border-slate-300 bg-white text-slate-700 hover:border-brandTeal transition">
+                  <span id="optNo1">नहीं (No)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Question 2: Lesion Spreading Rate -->
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+              <p id="q2Text" class="text-xs font-bold text-brandNavy leading-tight">
+                2. क्या लालिमा या सूजन पिछले 24 घंटों में बहुत तेज़ी से आगे बढ़ रही है?
+              </p>
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" onclick="setQuestionAnswer(2, 1)" id="btnQ2Yes" class="q-btn-2 py-2 px-3 rounded-xl border text-xs font-bold border-slate-300 bg-white text-slate-700 hover:border-brandTeal transition">
+                  <span id="optYes2">हाँ (Yes)</span>
+                </button>
+                <button type="button" onclick="setQuestionAnswer(2, 0)" id="btnQ2No" class="q-btn-2 py-2 px-3 rounded-xl border text-xs font-bold border-slate-300 bg-white text-slate-700 hover:border-brandTeal transition">
+                  <span id="optNo2">नहीं (No)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Question 3: Pain Severity & Heat -->
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+              <p id="q3Text" class="text-xs font-bold text-brandNavy leading-tight">
+                3. क्या प्रभावित जगह छूने पर गर्म और असहनीय दर्द (Severe Pain) है?
+              </p>
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" onclick="setQuestionAnswer(3, 1)" id="btnQ3Yes" class="q-btn-3 py-2 px-3 rounded-xl border text-xs font-bold border-slate-300 bg-white text-slate-700 hover:border-brandTeal transition">
+                  <span id="optYes3">हाँ (Yes)</span>
+                </button>
+                <button type="button" onclick="setQuestionAnswer(3, 0)" id="btnQ3No" class="q-btn-3 py-2 px-3 rounded-xl border text-xs font-bold border-slate-300 bg-white text-slate-700 hover:border-brandTeal transition">
+                  <span id="optNo3">नहीं (No)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Threat Level Display Box -->
+          <div id="threatLevelBox" class="mt-2 p-3.5 rounded-2xl border transition-all duration-300 flex items-start gap-3 bg-slate-100 border-slate-200">
+            <div id="threatIconHolder" class="w-8 h-8 rounded-xl flex items-center justify-center text-white bg-slate-400 flex-shrink-0 mt-0.5">
+              <i data-lucide="info" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] uppercase font-black tracking-wider text-slate-500" id="lblThreatHeader">जोखिम स्थिति (Threat Status):</span>
+                <span id="txtThreatStatusBadge" class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-slate-200 text-slate-700">
+                  प्रतीक्षारत (Pending)
+                </span>
+              </div>
+              <p id="txtThreatDescription" class="text-xs font-semibold text-slate-600 mt-1 leading-snug">
+                कृपया सटीक जोखिम स्तर जानने के लिए ऊपर दिए गए तीनों प्रश्नों का उत्तर दें।
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div id="actionContainer" class="pt-3 border-t border-slate-100 space-y-2.5"></div>
+      </div>
+
+      <button onclick="resetApp()" class="w-full py-3.5 text-center font-bold text-xs sm:text-sm text-slate-500 hover:text-brandNavy transition flex items-center justify-center gap-1.5">
+        <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+        <span id="btnStartOver">नया स्कैन शुरू करें</span>
+      </button>
+    </section>
+
+  </main>
+
+  <!-- IMAGE QUALITY WARNING MODAL -->
+  <div id="qualityWarningModal" class="fixed inset-0 z-50 bg-brandNavy/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white max-w-md w-full rounded-3xl p-6 shadow-2xl border border-red-200 text-center space-y-5">
+      <div class="w-16 h-16 rounded-2xl bg-red-100 text-brandAlertRed flex items-center justify-center mx-auto shadow-inner">
+        <i data-lucide="camera-off" class="w-8 h-8"></i>
+      </div>
+
+      <div class="space-y-2">
+        <span class="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-red-100 text-brandAlertRed border border-red-200" id="lblQualityRejectedBadge">
+          तस्वीर अमान्य (Image Defect Detected)
+        </span>
+        <h3 class="text-xl font-black text-brandNavy leading-snug" id="txtQualityErrorTitle">
+          तस्वीर धुंधली या अस्पष्ट है
+        </h3>
+        <p class="text-xs font-medium text-slate-600 leading-relaxed" id="txtQualityErrorDesc">
+          AI मॉडल सही जांच नहीं कर सकता क्योंकि तस्वीर में अत्यधिक धुंधलापन (blur), अंधेरा या तेज रोशनी का व्यवधान है। कृपया साफ और स्पष्ट तस्वीर दोबारा लें।
+        </p>
+      </div>
+
+      <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-[11px] text-amber-900 text-left flex items-start gap-2">
+        <i data-lucide="lightbulb" class="w-4 h-4 text-brandWarningYellow flex-shrink-0 mt-0.5"></i>
+        <span id="txtQualityTips">सुझाव: कैमरे को स्थिर रखें, पर्याप्त रोशनी में फोटो लें और लेंस को प्रभावित त्वचा से 4-6 इंच की दूरी पर रखें।</span>
+      </div>
+
+      <div class="pt-2">
+        <button type="button" onclick="closeQualityWarningAndRetake()" class="w-full py-3.5 px-4 bg-brandTeal hover:bg-brandTeal/90 text-white font-bold rounded-2xl shadow-lg shadow-brandTeal/30 transition active:scale-95 flex items-center justify-center gap-2 text-sm">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+          <span id="btnRetakePhoto">दोबारा तस्वीर लें (Retake Photo)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TERMS AND CONDITIONS MODAL -->
+  <div id="termsModal" class="fixed inset-0 z-50 bg-brandNavy/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white max-w-lg w-full rounded-3xl p-6 shadow-2xl border border-slate-200 space-y-4 max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="shield-check" class="w-5 h-5 text-brandTeal"></i>
+          <h3 id="lblTermsTitle" class="text-lg font-black text-brandNavy">नियम और शर्तें (Terms & Conditions)</h3>
+        </div>
+        <button onclick="toggleTermsModal(false)" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="overflow-y-auto space-y-3 text-xs text-slate-600 leading-relaxed pr-1 flex-grow">
+        <p id="termsText1"><strong>1. चिकित्सा अस्वीकरण (Medical Disclaimer):</strong> DermaVision एक कृत्रिम बुद्धिमत्ता (AI) आधारित प्रारंभिक स्क्रीनिंग और ट्राइऐज सहायक प्रणाली है। यह पेशेवर डॉक्टर, त्वचा विशेषज्ञ (Dermatologist) या नैदानिक प्रयोगशाला की जगह नहीं लेती है।</p>
+        <p id="termsText2"><strong>2. आपातकालीन स्थिति (Emergency Use):</strong> गंभीर संक्रमण (जैसे सेल्युलाइटिस) या एनाफिलेक्टिक प्रतिक्रिया की स्थिति में, इस ऐप पर निर्भर न रहें और तुरंत नजदीकी अस्पताल या आपातकालीन सेवा (108) से संपर्क करें।</p>
+        <p id="termsText3"><strong>3. डेटा गोपनीयता (Data Privacy):</strong> अपलोड की गई या कैमरे से ली गई तस्वीरें केवल स्थानीय ब्राउज़र और टेलीमेडिसिन ट्राइऐज सिमुलेशन के लिए उपयोग की जाती हैं। आपकी गोपनीयता और सुरक्षा हमारी प्राथमिकता है।</p>
+        <p id="termsText4"><strong>4. एशा/स्वास्थ्य कार्यकर्ता उपयोग (ASHA/ANM Workflow):</strong> यह मंच ग्रामीण स्वास्थ्य कार्यकर्ताओं (ASHA/ANM) और प्राथमिक स्वास्थ्य केंद्रों (PHC) को प्रारंभिक स्वास्थ्य संदर्भ और टेली-रेफरल में सहायता प्रदान करने के लिए अभिकल्पित किया गया है।</p>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-end">
+        <button type="button" onclick="toggleTermsModal(false)" class="px-5 py-2.5 bg-brandTeal text-white text-xs font-bold rounded-xl shadow hover:bg-brandTeal/90 transition">
+          <span id="btnAgreeTerms">समझ गया / Close</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE CAMERA MODAL -->
+  <div id="cameraModal" class="fixed inset-0 bg-black z-50 hidden flex-col items-center justify-between p-3 sm:p-6" style="height: 100dvh;">
+    <div class="w-full max-w-md flex items-center justify-between text-white z-10">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+        <span class="text-xs font-semibold uppercase tracking-wider text-white/80">Live AI Feed</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="flipCamera()" class="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition">
+          <i data-lucide="switch-camera" class="w-5 h-5"></i>
+        </button>
+        <button onclick="closeLiveCamera()" class="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="relative w-full max-w-md flex-1 my-3 rounded-3xl overflow-hidden bg-slate-900 flex items-center justify-center shadow-2xl border border-white/10">
+      <video id="cameraVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
+      <div class="absolute inset-0 pointer-events-none flex items-center justify-center p-4">
+        <div class="w-56 h-56 sm:w-64 sm:h-64 border-2 border-dashed border-white/70 rounded-2xl relative flex items-center justify-center">
+          <span class="text-[10px] sm:text-[11px] font-bold text-white/80 bg-black/60 px-2.5 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm text-center">
+            त्वचा यहाँ केंद्रित करें
+          </span>
+          <div class="absolute top-2 left-2 w-3.5 h-3.5 border-t-2 border-l-2 border-brandPeach"></div>
+          <div class="absolute top-2 right-2 w-3.5 h-3.5 border-t-2 border-r-2 border-brandPeach"></div>
+          <div class="absolute bottom-2 left-2 w-3.5 h-3.5 border-b-2 border-l-2 border-brandPeach"></div>
+          <div class="absolute bottom-2 right-2 w-3.5 h-3.5 border-b-2 border-r-2 border-brandPeach"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-full max-w-md flex flex-col items-center gap-2 z-10 pb-2">
+      <button onclick="captureCameraSnapshot()" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-white flex items-center justify-center p-1 bg-white/20 hover:bg-white/30 active:scale-95 transition">
+        <div class="w-full h-full rounded-full bg-white shadow-lg flex items-center justify-center text-brandNavy">
+          <i data-lucide="camera" class="w-7 h-7 sm:w-8 sm:h-8 text-brandNavy"></i>
+        </div>
+      </button>
+      <p class="text-white/70 text-[11px] sm:text-xs font-semibold">तस्वीर खींचने के लिए दबाएं (Tap to Capture)</p>
+    </div>
+
+    <canvas id="cameraCanvas" class="hidden"></canvas>
+  </div>
+
+  <canvas id="cvAnalyzerCanvas" class="hidden"></canvas>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
+    <div class="max-w-4xl mx-auto px-4 text-center space-y-1.5">
+      <div class="flex items-center justify-center gap-2 text-brandTeal font-bold tracking-wider text-xs">
+        <span class="font-extrabold text-brandNavy">DermaVision</span>
+        <span class="text-slate-300">•</span>
+        <span class="text-slate-500 font-normal">Rural Tele-Dermatology Triage</span>
+      </div>
+      <p class="text-[10px] text-slate-500 max-w-md mx-auto">
+        Built for low-bandwidth mobile environments, ASHA/ANM workers, and district clinical referral workflows.
+      </p>
+      <div class="pt-1">
+        <button type="button" onclick="toggleTermsModal(true)" class="text-[11px] font-semibold text-brandTeal hover:underline">
+          <span id="lnkTermsFooter">नियम और शर्तें (Terms & Conditions)</span>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MULTILINGUAL DICTIONARY & LOGIC -->
+  <script>
+    const translations = {
+      hi: {
+        badgeStep1: "चरण 1",
+        titleStep1: "चमड़ी की तस्वीर लें",
+        descStep1: "प्रभावित त्वचा की साफ़ और नज़दीक से फ़ोटो लें ताकि AI तुरंत जांच कर सके।",
+        btnCamera: "कैमरा खोलें",
+        btnUpload: "गैलरी से चुनें",
+        txtVoiceAssist: "सुनिए",
+        txtAnalyzingTitle: "तस्वीर की जांच हो रही है...",
+        txtAnalyzingSubtitle: "DermaVision AI मॉडल गुणवत्ता और लक्षणों का विश्लेषण कर रहा है",
+        lblConfidence: "AI सटीकता",
+        lblGuidance: "सलाह और आवश्यक कदम:",
+        lblLearnMoreTitle: "इस बीमारी के बारे में और जानें (Learn More)",
+        lblCausesHeading: "मुख्य कारण (Causes):",
+        lblRedFlagsHeading: "खतरे के लक्षण (Warning Signs):",
+        lblPreventionHeading: "बचाव और देखभाल (Prevention):",
+        lblQuestionsHeader: "सटीक जांच के लिए 3 प्रश्नों के उत्तर दें:",
+        q1Text: "1. क्या आपको बुखार, कपकपी या अत्यधिक कमजोरी महसूस हो रही है?",
+        q2Text: "2. क्या लालिमा या सूजन पिछले 24 घंटों में बहुत तेज़ी से आगे बढ़ रही है?",
+        q3Text: "3. क्या प्रभावित जगह छूने पर गर्म और असहनीय दर्द (Severe Pain) है?",
+        optYes: "हाँ (Yes)",
+        optNo: "नहीं (No)",
+        lblThreatHeader: "जोखिम स्थिति (Threat Status):",
+        threatPendingBadge: "प्रतीक्षारत (Pending)",
+        threatPendingDesc: "कृपया सटीक जोखिम स्तर जानने के लिए ऊपर दिए गए तीनों प्रश्नों का उत्तर दें।",
+        lblQualityRejectedBadge: "तस्वीर अमान्य (Image Defect Detected)",
+        txtBlurTitle: "तस्वीर धुंधली है (Image is Blurry)",
+        txtBlurDesc: "कैमरा हिलने या फोकस न होने के कारण तस्वीर धुंधली आई है। त्वचा के दाने स्पष्ट नहीं दिख रहे हैं। कृपया स्थिर हाथ से दोबारा फोटो लें।",
+        txtDisruptionTitle: "रोशनी या व्यवधान की समस्या (Lighting Issue)",
+        txtDisruptionDesc: "तस्वीर में बहुत ज्यादा अंधेरा या अत्यधिक तेज फ्लैश/चमक (Glare) है, जिससे त्वचा के रंग और घाव का सही आकलन नहीं हो पा रहा है।",
+        txtQualityTips: "सुझाव: पर्याप्त प्राकृतिक रोशनी में फोटो लें, लेंस को साफ रखें और कैमरे को प्रभावित त्वचा से 4-6 इंच की दूरी पर स्थिर रखें।",
+        btnRetakePhoto: "दोबारा तस्वीर लें (Retake Photo)",
+        lblTermsTitle: "नियम और शर्तें (Terms & Conditions)",
+        termsText1: "<strong>1. चिकित्सा अस्वीकरण (Medical Disclaimer):</strong> DermaVision एक कृत्रिम बुद्धिमत्ता (AI) आधारित प्रारंभिक स्क्रीनिंग और ट्राइऐज सहायक प्रणाली है। यह पेशेवर डॉक्टर, त्वचा विशेषज्ञ (Dermatologist) या नैदानिक प्रयोगशाला की जगह नहीं लेती है।",
+        termsText2: "<strong>2. आपातकालीन स्थिति (Emergency Use):</strong> गंभीर संक्रमण (जैसे सेल्युलाइटिस) या एनाफिलेक्टिक प्रतिक्रिया की स्थिति में, इस ऐप पर निर्भर न रहें और तुरंत नजदीकी अस्पताल या आपातकालीन सेवा (108) से संपर्क करें।",
+        termsText3: "<strong>3. डेटा गोपनीयता (Data Privacy):</strong> अपलोड की गई या कैमरे से ली गई तस्वीरें केवल स्थानीय ब्राउज़र और टेलीमेडिसिन ट्राइऐज सिमुलेशन के लिए उपयोग की जाती हैं। आपकी गोपनीयता और सुरक्षा हमारी प्राथमिकता है।",
+        termsText4: "<strong>4. एशा/स्वास्थ्य कार्यकर्ता उपयोग (ASHA/ANM Workflow):</strong> यह मंच ग्रामीण स्वास्थ्य कार्यकर्ताओं (ASHA/ANM) और प्राथमिक स्वास्थ्य केंद्रों (PHC) को प्रारंभिक स्वास्थ्य संदर्भ और टेली-रेफरल में सहायता प्रदान करने के लिए अभिकल्पित किया गया है।",
+        btnAgreeTerms: "समझ गया / Close",
+        lnkTermsFooter: "नियम और शर्तें (Terms & Conditions)",
+        threatLevels: {
+          critical: {
+            badge: "अति गंभीर जोखिम / CRITICAL THREAT",
+            desc: "मरीज में गंभीर संक्रमण (उदा. सेल्युलाइटिस/रक्त विषाक्तता) के प्रत्यक्ष लक्षण हैं। तुरंत एम्बुलेंस या नजदीकी बड़े अस्पताल जाएं।",
+            tts: "चेतावनी! मरीज में अति गंभीर संक्रमण के लक्षण हैं। तुरंत बड़े अस्पताल जाएं।"
+          },
+          moderate: {
+            badge: "मध्यम जोखिम / MODERATE THREAT",
+            desc: "संक्रमण फैलने का खतरा है। 24 घंटे में त्वचा विशेषज्ञ या डॉक्टर से ऑनलाइन/ओपीडी परामर्श अनिवार्य है।",
+            tts: "मध्यम जोखिम पाया गया है। डॉक्टर से परामर्श लें।"
+          },
+          low: {
+            badge: "सामान्य जोखिम / LOW THREAT",
+            desc: "लक्षण सामान्य हैं। स्वच्छता बनाए रखें और स्थानीय प्राथमिक स्वास्थ्य केंद्र (PHC) में दिखाएं।",
+            tts: "यह सामान्य जोखिम है। प्राथमिक स्वास्थ्य केंद्र जाएं।"
+          }
+        },
+        btnStartOver: "नया स्कैन शुरू करें",
+        btnCallAsha: "आशा कार्यकर्ता को कॉल करें",
+        btnCallHospital: "नजदीकी अस्पताल का रास्ता / एम्बुलेंस",
+        btnTeleConsult: "डॉक्टर से ऑनलाइन परामर्श करें",
+        demoHigh: "गंभीर (Cellulitis)",
+        demoMed: "मध्यम (Eczema)",
+        demoLow: "सामान्य (Rash)",
+        conditions: {
+          cellulitis: {
+            name: "सेल्युलाइटिस (गंभीर संक्रमण)",
+            severity: "अति गंभीर / HIGH RISK",
+            advice: "यह एक गहरा बैक्टीरियल संक्रमण हो सकता है जो तेज़ी से फैल सकता है। तुरंत नजदीकी बड़े अस्पताल (CHC/District Hospital) जाएं या डॉक्टर से संपर्क करें।",
+            tts: "चेतावनी! यह सेल्युलाइटिस का गंभीर संक्रमण हो सकता है। कृपया तुरंत बड़े अस्पताल जाएं।",
+            causes: "त्वचा पर किसी खरोंच, कट, कीड़े के काटने या छाले के रास्ते स्ट्रेप्टोकोकस या स्टेफिलोकोकस बैक्टीरिया का प्रवेश।",
+            redFlags: "तेज़ बुखार, कंपकंपी, लाली का तेज़ी से ऊपर की तरफ फैलना, घाव के आसपास तेज़ जलन या फफोले बनना।",
+            prevention: "घाव को तुरंत साबुन-पानी से धोकर रोगाणुरोधी पट्टी लगाएं। पैर या हाथ को ऊंचा रखें और खरोंचने से बचें।"
+          },
+          eczema: {
+            name: "एक्जिमा / त्वचा की सूजन",
+            severity: "मध्यम / MODERATE",
+            advice: "त्वचा पर सूखापन और खुजली के लक्षण हैं। साबुन का प्रयोग कम करें और टेलीमेडिसिन के ज़रिए त्वचा विशेषज्ञ से दवा की पर्ची लें।",
+            tts: "यह एक्जिमा प्रतीत होता है। डॉक्टर से ऑनलाइन परामर्श लें।",
+            causes: "त्वचा की सुरक्षात्मक परत की कमजोरी, आनुवंशिक संवेदनशीलता, धूल, कीटनाशक या रासायनिक साबुन से एलर्जी।",
+            redFlags: "खुजली से खून निकलना, घाव से पीला मवाद बहना, या त्वचा का बहुत मोटा और गहरा लाल होना।",
+            prevention: "नहाने के तुरंत बाद नारियल तेल या मॉइस्चराइजर लगाएं। सूती कपड़े पहनें और तेज केमिकल साबुन से बचें।"
+          },
+          normal: {
+            name: "हल्की एलर्जी / सामान्य दाद",
+            severity: "सामान्य / LOW RISK",
+            advice: "यह हल्का संक्रमण प्रतीत होता है। प्रभावित हिस्से को साफ़ रखें और प्राथमिक स्वास्थ्य केंद्र (PHC) में दिखाएं।",
+            tts: "यह सामान्य लक्षण है। साफ़-सफ़ाई रखें और प्राथमिक केंद्र जाएं।",
+            causes: "पसीने से नमी, नए पौधे या कपड़े के संपर्क, या सतही फंगल अथवा हल्के संपर्क जलन के कारण।",
+            redFlags: "यदि 5 दिनों में खुजली कम न हो या दाने पूरे शरीर पर फैलने लगें।",
+            prevention: "प्रभावित स्थान को सूखा और स्वच्छ रखें। ढीले सूती कपड़े पहनें और तौलिया किसी से साझा न करें।"
+          }
+        }
+      },
+      ar: {
+        badgeStep1: "الخطوة ١",
+        titleStep1: "التقط صورة للجلد",
+        descStep1: "التقط صورة واضحة ومقربة لمنطقة الجلد المصابة ليتمكن الذكاء الاصطناعي من فحصها فوراً.",
+        btnCamera: "فتح الكاميرا",
+        btnUpload: "اختيار من المعرض",
+        txtVoiceAssist: "استمع",
+        txtAnalyzingTitle: "جارٍ فحص الصورة...",
+        txtAnalyzingSubtitle: "يقوم نموذج DermaVision بفحص الجودة وتشخيص الأعراض السريرية",
+        lblConfidence: "دقة الذكاء الاصطناعي",
+        lblGuidance: "الإجراء الطبي الموصى به:",
+        lblLearnMoreTitle: "تعرف أكثر على هذه الحالة المرضية (Learn More)",
+        lblCausesHeading: "الأسباب الرئيسية (Causes):",
+        lblRedFlagsHeading: "علامات الخطر الطارئة (Red Flags):",
+        lblPreventionHeading: "الوقاية والعناية المنزلية (Prevention):",
+        lblQuestionsHeader: "أجب عن ٣ أسئلة لتأكيد مستوى الخطورة بدقة:",
+        q1Text: "١. هل تعاني من الحمى (ارتفاع الحرارة)، أو قشعريرة، أو ضعف عام وشديد؟",
+        q2Text: "٢. هل ينتشر الاحمرار أو التورم بسرعة ملحوظة خلال آخر ٢٤ ساعة؟",
+        q3Text: "٣. هل المنطقة المصابة ساخنة جداً عند لمسها مع وجود ألم حاد لا يحتمل؟",
+        optYes: "نعم (Yes)",
+        optNo: "لا (No)",
+        lblThreatHeader: "مستوى الخطورة (Threat Status):",
+        threatPendingBadge: "قيد الانتظار (Pending)",
+        threatPendingDesc: "يرجى الإجابة على الأسئلة الثلاثة أعلاه لحساب مستوى التهديد بدقة.",
+        lblQualityRejectedBadge: "تم اكتشاف عيب في الصورة (Defective Image)",
+        txtBlurTitle: "الصورة غير واضحة أو مشوشة (Blurry)",
+        txtBlurDesc: "الصورة ملتقطة باهتزاز أو تفتقر إلى وضوح التركيز (Blur). حدود الإصابة غير ظاهرة بدقة، مما يمنع التشخيص. يرجى تثبيت اليد وإعادة التقاطها.",
+        txtDisruptionTitle: "خلل في الإضاءة أو الوهج (Lighting Issue)",
+        txtDisruptionDesc: "الصورة شديدة الظلام أو ساطعة للغاية بسبب فلاش الكاميرا. يرجى التقاط الصورة في ضوء طبيعي مناسب.",
+        txtQualityTips: "نصيحة: حافظ على ثبات الهاتف، التقط الصورة في إضاءة كافية، واجعل الكاميرا على بعد ٤ إلى ٦ بوصات من الجلد المصاب.",
+        btnRetakePhoto: "إعادة التقاط الصورة (Retake)",
+        lblTermsTitle: "الشروط والأحكام (Terms & Conditions)",
+        termsText1: "<strong>١. إخلاء المسؤولية الطبية (Medical Disclaimer):</strong> DermaVision هو نظام مساعد للفرز والفحص الأولي مدعوم بالذكاء الاصطناعي. وهو ليس بديلاً عن الطبيب البشري أو أخصائي الأمراض الجلدية أو المختبرات الطبية المعتمدة.",
+        termsText2: "<strong>٢. حالات الطوارئ (Emergency Use):</strong> في حال الإصابة بعدوى حادة (مثل التهاب النسيج الخلوي) أو رد فعل تحسسي خطير، لا تعتمد على هذا التطبيق وتوجه فوراً إلى أقرب مستشفى أو استخدم خدمة الطوارئ (108).",
+        termsText3: "<strong>٣. خصوصية البيانات (Data Privacy):</strong> يتم معالجة الصور المرفوعة أو الملتقطة عبر متصفحك محلياً فقط لأغراض محاكاة الفحص والفرز الطبي. حماية خصوصيتك وسلامتك هي أولويتنا القصوى.",
+        termsText4: "<strong>٤. سير عمل العاملين الصحيين (ASHA/ANM Workflow):</strong> تم تصميم هذه المنصة لمساعدة العاملين الصحيين في المناطق الريفية (ASHA/ANM) ومراكز الرعاية الأولية (PHC) في تقديم الإحالات الطبية عن بُعد بدقة وسرعة.",
+        btnAgreeTerms: "موافق / Close",
+        lnkTermsFooter: "الشروط والأحكام (Terms & Conditions)",
+        threatLevels: {
+          critical: {
+            badge: "خطر حرج ومباشر / CRITICAL THREAT",
+            desc: "توجد دلائل على انتشار عدوى بكتيرية عميقة وخطيرة. يجب التوجه فوراً لأقرب مستشفى عام أو الاتصال بالإسعاف.",
+            tts: "تحذير عاجل. تم رصد علامات عدوى خطيرة. يرجى التوجه للمستشفى فوراً."
+          },
+          moderate: {
+            badge: "تهديد متوسط / MODERATE THREAT",
+            desc: "خطر تطور الالتهاب الجلدي. ينصح بمراجعة طبيب جلدية أو استشارة طبية عن بُعد خلال ٢٤ ساعة.",
+            tts: "تهديد متوسط. يوصى باستشارة الطبيب خلال يوم واحد."
+          },
+          low: {
+            badge: "خطر منخفض / LOW THREAT",
+            desc: "الأعراض سطحية وبسيطة. حافظ على نظافة المنطقة واستشر المركز الصحي الأولي.",
+            tts: "مستوى الخطر منخفض. حافظ على النظافة والترطيب."
+          }
+        },
+        btnStartOver: "بدء فحص جديد",
+        btnCallAsha: "الاتصال بالعامل الصحي المجتمعي",
+        btnCallHospital: "الاتجاه إلى أقرب مستشفى مركزي / الإسعاف",
+        btnTeleConsult: "بدء استشارة طبيب عن بُعد (Telemedicine)",
+        demoHigh: "حرج (Cellulitis)",
+        demoMed: "متوسط (Eczema)",
+        demoLow: "بسيط (Rash)",
+        conditions: {
+          cellulitis: {
+            name: "التهاب النسيج الخلوي (عدوى شديدة)",
+            severity: "حرج للغاية / HIGH RISK",
+            advice: "قد تكون هذه عدوى بكتيرية عميقة وسريعة الانتشار في طبقات الجلد. يجب زيارة مستشفى مركزي فوراً لتلقي المضادات الحيوية المناسبة.",
+            tts: "تحذير. قد تكون هذه عدوى التهاب خلوي حاد. توجه للمستشفى فوراً.",
+            causes: "دخول بكتيريا المكورات العقدية أو العنقودية عبر جروح صغيرة، خدوش، لدغات الحشرات، أو تشققات الجلد.",
+            redFlags: "حمى شديدة، اتساع سريع لرقعة الاحمرار، تورم مفرط، أو ظهور فقاعات جلدية مؤلمة.",
+            prevention: "تنظيف أي جرح بالماء والصابون وتغطيته، رفع الطرف المصاب لأعلى، وعدم العبث بمكان الإصابة."
+          },
+          eczema: {
+            name: "الإكزيما / التهاب الجلد التأتبي",
+            severity: "متوسط / MODERATE",
+            advice: "تظهر علامات الجفاف والالتهاب والحكة. تجنب الصابون الكيميائي القاسي واحصل على وصفة مراهم مرطبة وطبية من طبيب الجلدية.",
+            tts: "يبدو أن هذه إكزيما جلدية. يرجى استشارة الطبيب لتحديد المرهم المناسب.",
+            causes: "ضعف حاجز البشرة الدهني الطبيعي، حساسية وراثية، التعرض للغبار أو المنظفات المنزلية القاسية.",
+            redFlags: "خروج إفرازات قيحية صفراء، نزيف ناتج عن الحكة الشديدة، أو تشقق عميق ومؤلم في الجلد.",
+            prevention: "استخدام زيت جوز الهند النقي أو كريمات الترطيب بعد الاستحمام مباشرة وارتداء ملابس قطنية واسعة."
+          },
+          normal: {
+            name: "طفح جلدي بسيط / تحسس سطحي",
+            severity: "منخفض / LOW RISK",
+            advice: "تفاعل سطحي ناتج عن احتكاك أو حرارة. حافظ على جفاف ونظافة الجلد وراجع الوحدة الصحية الأولية إذا استمر التهيج.",
+            tts: "حالة طفح جلدي طفيفة. حافظ على النظافة والتهوية.",
+            causes: "التعرق الزائد، الاحتكاك المباشر، أو ملامسة نباتات أو أقمشة صناعية تسبب حساسية موضعية خفيفة.",
+            redFlags: "عدم استجابة الطفح للشفاء بعد ٥ إلى ٧ أيام أو انتشারে السريع في مناطق جديدة.",
+            prevention: "إبقاء الجلد جافاً ونظيفاً، ارتداء ملابس خفيفة، وتجنب مشاركة المناشف الشخصية."
+          }
+        }
+      },
+      en: {
+        badgeStep1: "STEP 1",
+        titleStep1: "Capture Skin Photo",
+        descStep1: "Take a clear, well-lit photo of the affected skin area for instant AI triage.",
+        btnCamera: "Open Camera",
+        btnUpload: "Upload from Gallery",
+        txtVoiceAssist: "Listen",
+        txtAnalyzingTitle: "Analyzing skin lesion...",
+        txtAnalyzingSubtitle: "DermaVision AI is evaluating image quality and clinical symptoms",
+        lblConfidence: "AI Confidence",
+        lblGuidance: "Recommended Medical Action:",
+        lblLearnMoreTitle: "Learn More About This Condition",
+        lblCausesHeading: "Primary Causes:",
+        lblRedFlagsHeading: "Emergency Warning Signs (Red Flags):",
+        lblPreventionHeading: "Prevention & Home Management:",
+        lblQuestionsHeader: "Answer 3 Clinical Questions to Confirm Threat Level:",
+        q1Text: "1. Are you experiencing fever, chills, or systemic weakness?",
+        q2Text: "2. Is the redness or swelling spreading rapidly in the last 24 hours?",
+        q3Text: "3. Is the affected area hot to touch with severe/unbearable pain?",
+        optYes: "Yes",
+        optNo: "No",
+        lblThreatHeader: "Dynamic Threat Status:",
+        threatPendingBadge: "Pending Assessment",
+        threatPendingDesc: "Please answer all 3 clinical questions above to calculate the exact patient threat level.",
+        lblQualityRejectedBadge: "Image Defect Detected",
+        txtBlurTitle: "Image is Blurry",
+        txtBlurDesc: "The captured photo lacks focus or has motion blur. Skin lesion borders are unclear. Clinical AI analysis is blocked. Please retake a sharper photo.",
+        txtDisruptionTitle: "Lighting or Glare Disruption",
+        txtDisruptionDesc: "The photo is too dark or washed out by flash glare. Lesion pigmentation cannot be evaluated accurately.",
+        txtQualityTips: "Tip: Use natural lighting, steady your hands, clean the camera lens, and hold the phone 4 to 6 inches from the lesion.",
+        btnRetakePhoto: "Retake Photo",
+        lblTermsTitle: "Terms & Conditions",
+        termsText1: "<strong>1. Medical Disclaimer:</strong> DermaVision is an AI-powered preliminary screening and triage assistant. It is not a substitute for a professional physician, dermatologist, or accredited diagnostic laboratory.",
+        termsText2: "<strong>2. Emergency Situations:</strong> In cases of severe infection (e.g., cellulitis) or systemic shock, do not rely solely on this application and immediately contact emergency services (108) or a tertiary hospital.",
+        termsText3: "<strong>3. Data Privacy:</strong> Uploaded or captured photos are processed securely in your local browser environment for clinical simulation triage. Your privacy and data confidentiality are fully protected.",
+        termsText4: "<strong>4. ASHA/ANM Workflow:</strong> This platform is designed to assist rural community health workers (ASHA/ANM) and primary health centers (PHC) in rapid telehealth documentation and referral triage.",
+        btnAgreeTerms: "I Agree / Close",
+        lnkTermsFooter: "Terms & Conditions",
+        threatLevels: {
+          critical: {
+            badge: "CRITICAL THREAT / IMMEDIATE DANGER",
+            desc: "Systemic infection markers detected (e.g. cellulitis/septic spread). Urgent transfer to tertiary hospital or 108 ambulance required.",
+            tts: "Critical threat detected. Urgent hospital visit required."
+          },
+          moderate: {
+            badge: "MODERATE THREAT / URGENT REVIEW",
+            desc: "Risk of progressive dermic involvement. Consult a clinical doctor or telemedicine provider within 24 hours.",
+            tts: "Moderate threat. Doctor consultation recommended."
+          },
+          low: {
+            badge: "LOW THREAT / PRIMARY CARE",
+            desc: "Localized mild presentation. Practice topical hygiene and visit your nearby primary health center.",
+            tts: "Low threat level. Follow basic clinic hygiene."
+          }
+        },
+        btnStartOver: "Start New Scan",
+        btnCallAsha: "Call ASHA Worker",
+        btnCallHospital: "Route to Nearest District Hospital",
+        btnTeleConsult: "Start Doctor Telemedicine Call",
+        demoHigh: "Critical (Cellulitis)",
+        demoMed: "Moderate (Eczema)",
+        demoLow: "Mild (Rash)",
+        conditions: {
+          cellulitis: {
+            name: "Cellulitis (Severe Infection)",
+            severity: "HIGH RISK / CRITICAL",
+            advice: "Potential spreading bacterial dermis infection. Immediate tertiary clinical attention required to prevent systemic complications.",
+            tts: "Warning. High risk infection detected. Immediate hospital visit recommended.",
+            causes: "Infiltration of Streptococcus or Staphylococcus bacteria via open cuts, scrapes, animal/insect bites, or cracked skin.",
+            redFlags: "High fever, chills, rapid expansion of redness margins, severe swelling, blistering, or localized extreme warmth.",
+            prevention: "Clean cuts thoroughly with antiseptic, keep limbs elevated, stay hydrated, and never attempt to pierce or squeeze the area."
+          },
+          eczema: {
+            name: "Eczema / Dermatitis",
+            severity: "MODERATE RISK",
+            advice: "Inflammatory skin barrier response. Consult a tele-dermatologist for topical ointment prescription.",
+            tts: "Moderate condition detected. Please connect with a telemedicine doctor.",
+            causes: "Compromised skin epidermal barrier, immune hypersensitivity, contact irritants such as harsh soaps, detergents, or agricultural dust.",
+            redFlags: "Yellow crusted exudate indicating secondary bacterial infection, severe sleep loss from intense itching, or skin fissuring.",
+            prevention: "Apply bland emollients or virgin coconut oil immediately post-bathing. Wear breathable cotton clothing and avoid fragranced cleansers."
+          },
+          normal: {
+            name: "Mild Contact Rash",
+            severity: "LOW RISK",
+            advice: "Mild topical reaction. Maintain skin hydration, avoid scratching, and consult local clinic if irritation persists.",
+            tts: "Low risk condition. Maintain local hygiene and visit your primary clinic.",
+            causes: "Superficial friction, heat/perspiration entrapment, mild contact hypersensitivity to plants, fabrics, or surface fungal flora.",
+            redFlags: "Failure of rash to resolve after 5-7 days, formation of open sores, or expansion across facial/mucosal zones.",
+            prevention: "Keep the area aerated and dry. Wash with lukewarm water and avoid sharing bed linens or towels."
+          }
+        }
+      },
+      bn: {
+        badgeStep1: "ধাপ ১",
+        titleStep1: "ত্বকের ছবি তুলুন",
+        descStep1: "আক্রান্ত ত্বকের একটি পরিষ্কার ছবি তুলুন যাতে এআই দ্রুত পরীক্ষা করতে পারে।",
+        btnCamera: "ক্যামেরা খুলুন",
+        btnUpload: "গ্যালারি থেকে বেছে নিন",
+        txtVoiceAssist: "শুনুন",
+        txtAnalyzingTitle: "ছবি পরীক্ষা করা হচ্ছে...",
+        txtAnalyzingSubtitle: "DermaVision AI ছবির গুণমান ও লক্ষণ বিশ্লেষণ করছে",
+        lblConfidence: "AI নির্ভুলতা",
+        lblGuidance: "পরামর্শ ও করণীয় পদক্ষেপ:",
+        lblLearnMoreTitle: "এই রোগ সম্পর্কে আরও জানুন (Learn More)",
+        lblCausesHeading: "প্রধান কারণসমূহ (Causes):",
+        lblRedFlagsHeading: "বিপদজনক লক্ষণ (Red Flags):",
+        lblPreventionHeading: "প্রতিরোধ ও যত্ন (Prevention):",
+        lblQuestionsHeader: "সঠিক ঝুঁকির মাত্রা জানতে ৩টি প্রশ্নের উত্তর দিন:",
+        q1Text: "১. আপনার কি জ্বর, কাঁপুনি বা অতিরিক্ত দুর্বলতা আছে?",
+        q2Text: "২. ফোলাভাব বা লালচে রঙ কি গত ২৪ ঘণ্টায় খুব দ্রুত ছড়িয়ে পড়ছে?",
+        q3Text: "৩. আক্রান্ত স্থান স্পর্শ করলে কি অতিরিক্ত গরম এবং তীব্র ব্যথা অনুভূত হয়?",
+        optYes: "হ্যাঁ (Yes)",
+        optNo: "না (No)",
+        lblThreatHeader: "ঝুঁকির অবস্থা (Threat Status):",
+        threatPendingBadge: "অপেক্ষমান (Pending)",
+        threatPendingDesc: "সঠিক ঝুঁকির মাত্রা নির্ধারণের জন্য উপরের ৩টি প্রশ্নের উত্তর দিন।",
+        lblQualityRejectedBadge: "ছবিটি অস্পষ্ট (Defective Image)",
+        txtBlurTitle: "ছবিটি ঝাপসা এসেছে (Blurry Image)",
+        txtBlurDesc: "ক্যামেরা নড়ে যাওয়ার কারণে ছবি ঝাপসা এসেছে। নির্ভুল পরীক্ষার জন্য অনুগ্রহ করে পরিষ্কার ছবি আবার তুলুন।",
+        txtDisruptionTitle: "আলো বা ঝলকানির সমস্যা (Lighting Disruption)",
+        txtDisruptionDesc: "ছবিতে অতিরিক্ত অন্ধকার বা তীব্র ফ্ল্যাশের আলো রয়েছে। দয়া করে পর্যাপ্ত আলোতে স্পষ্ট ছবি তুলুন।",
+        txtQualityTips: "পরামর্শ: স্বাভাবিক আলোতে ক্যামেরা স্থির রেখে ত্বক থেকে ৪-৬ ইঞ্চি দূর থেকে ছবি তুলুন।",
+        btnRetakePhoto: "আবার ছবি তুলুন (Retake)",
+        lblTermsTitle: "শর্তাবলী (Terms & Conditions)",
+        termsText1: "<strong>১. চিকিৎসা সংক্রান্ত দাবিত্যাগ (Medical Disclaimer):</strong> DermaVision হলো একটি কৃত্রিম বুদ্ধিমত্তা (AI) ভিত্তিক প্রাথমিক স্ক্রীনিং ও ট্রাইজ সহায়ক সিস্টেম। এটি কোনো পেশাদার চিকিৎসক, চর্মরোগ বিশেষজ্ঞ বা ডায়াগনস্টিক ল্যাবের বিকল্প নয়।",
+        termsText2: "<strong>২. জরুরি পরিস্থিতি (Emergency Use):</strong> গুরুতর সংক্রমণ (যেমন সেলুলাইটিস) দেখা দিলে এই অ্যাপের ওপর নির্ভর না করে অবিলম্বে নিকটস্থ হাসপাতালে বা জরুরি সেবায় (১০৮) যোগাযোগ করুন।",
+        termsText3: "<strong>৩. ডেটা গোপনীয়তা (Data Privacy):</strong> আপলোড করা বা ক্যামেরায় তোলা ছবিগুলি শুধুমাত্র স্থানীয় ব্রাউজারে ট্রাইজ সিমুলেশনের জন্য প্রক্রিয়া করা হয়। আপনার গোপনীয়তা আমাদের সর্বোচ্চ অগ্রাধিকার।",
+        termsText4: "<strong>৪. আশা/স্বাস্থ্যকর্মী কর্মপ্রবাহ (ASHA/ANM Workflow):</strong> এই প্ল্যাটফর্মটি গ্রামীণ স্বাস্থ্যকর্মী (ASHA/ANM) এবং প্রাথমিক স্বাস্থ্যকেন্দ্রগুলিকে (PHC) দ্রুত রেফারেল ও স্বাস্থ্য সংক্রান্ত নথিপত্র তৈরিতে সহায়তা করার জন্য ডিজাইন করা হয়েছে।",
+        btnAgreeTerms: "সম্মত আছি / Close",
+        lnkTermsFooter: "শর্তাবলী (Terms & Conditions)",
+        threatLevels: {
+          critical: {
+            badge: "মারাত্মক হুমকি / CRITICAL THREAT",
+            desc: "মারাত্মক সংক্রমণের লক্ষণ রয়েছে। অবিলম্বে অ্যাম্বুলেন্স বা নিকটস্থ হাসপাতালে যান।",
+            tts: "মারাত্মক হুমকি। দ্রুত হাসপাতালে যান।"
+          },
+          moderate: {
+            badge: "মাঝারি হুমকি / MODERATE THREAT",
+            desc: "সংক্রমণ বাড়ার ঝুঁকি রয়েছে। ২৪ ঘণ্টার মধ্যে ডাক্তারের সাথে যোগাযোগ করুন।",
+            tts: "মাঝারি ঝুঁকি রয়েছে।"
+          },
+          low: {
+            badge: "স্বাভাবিক মাত্রা / LOW THREAT",
+            desc: "উপসর্গ স্বাভাবিক। স্থানীয় প্রাথমিক স্বাস্থ্যকেন্দ্রে দেখান।",
+            tts: "ঝুঁকি স্বাভাবিক।"
+          }
+        },
+        btnStartOver: "নতুন স্ক্যান শুরু করুন",
+        btnCallAsha: "আশা কর্মীকে কল করুন",
+        btnCallHospital: "নিকটবর্তী হাসপাতালে যাওয়ার পথ",
+        btnTeleConsult: "ডাক্তারের সাথে অনলাইন পরামর্শ নিন",
+        demoHigh: "মারাত্মক (Cellulitis)",
+        demoMed: "মাঝারি (Eczema)",
+        demoLow: "সাধারণ (Rash)",
+        conditions: {
+          cellulitis: {
+            name: "সেলুলাইটিস (মারাত্মক সংক্রমণ)",
+            severity: "অত্যন্ত বিপজ্জনক / HIGH RISK",
+            advice: "এটি একটি গভীর ব্যাকটিরিয়া সংক্রমণ হতে পারে। দেরি না করে দ্রুত জেলা হাসপাতাল বা স্বাস্থ্যকেন্দ্রে যান।",
+            tts: "সতর্কতা! এটি একটি গুরুতর সংক্রমণ হতে পারে। অবিলম্বে হাসপাতালে যান।",
+            causes: "ত্বকের কাটা বা ক্ষতের মাধ্যমে স্ট্রেপ্টোকক্কাস বা স্ট্যাফিলোকক্কাস ব্যাকটেরিয়ার আক্রমণ।",
+            redFlags: "তীব্র জ্বর, কাঁপুনি, দ্রুত লালচে ভাব বৃদ্ধি পাওয়া এবং ফোসকা পড়া।",
+            prevention: "ক্ষতস্থান জীবাণুমুক্ত রাখুন এবং আক্রান্ত অঙ্গ কিছুটা উঁচুতে রাখুন।"
+          },
+          eczema: {
+            name: "একজিমা / ত্বকের প্রদাহ",
+            severity: "মাঝারি / MODERATE",
+            advice: "ত্বকে শুষ্কতা ও চুলকানির লক্ষণ দেখা যাচ্ছে। টেলিমেডিসিনের মাধ্যমে ডাক্তারের পরামর্শ নিন।",
+            tts: "এটি একজিমা হতে পারে। ডাক্তারের সাথে অনলাইন পরামর্শ করুন।",
+            causes: "ত্বকের আর্দ্রতা হ্রাস, অ্যালার্জি, ডিটারজেন্ট বা কীটনাশকের সংস্পর্শ।",
+            redFlags: "হলুদ পুঁজ বের হওয়া বা প্রচণ্ড ব্যথার সৃষ্টি হওয়া।",
+            prevention: "স্নানের পর নারকেল তেল বা ময়েশ্চারাইজার লাগান এবং সুতির পোশাক পরুন।"
+          },
+          normal: {
+            name: "সাধারণ ফুসকুড়ি / অ্যালার্জি",
+            severity: "স্বাভাবিক / LOW RISK",
+            advice: "এটি মৃদু সংক্রমণ বলে মনে হচ্ছে। আক্রান্ত স্থান পরিষ্কার রাখুন এবং প্রাথমিক স্বাস্থ্যকেন্দ্রে দেখান।",
+            tts: "এটি সাধারণ সমস্যা। স্থানটি পরিষ্কার রাখুন।",
+            causes: "ঘাম, আর্দ্রতা বা সাধারণ ফাঙ্গাল অ্যালার্জি।",
+            redFlags: "যদি ৫-৭ দিনের মধ্যে ফুসকুড়ি না কমে বা ছড়িয়ে পড়ে।",
+            prevention: "ত্বক পরিষ্কার ও শুকনো রাখুন এবং অন্যের তোয়ালে ব্যবহার করবেন না।"
+          }
+        }
+      },
+      ta: {
+        badgeStep1: "படி 1",
+        titleStep1: "தோல் படம் எடுக்கவும்",
+        descStep1: "பாதிக்கப்பட்ட பகுதியின் தெளிவான புகைப்படத்தை எடுக்கவும்.",
+        btnCamera: "கேமரா திறக்க",
+        btnUpload: "கேலரியில் தேர்வு செய்",
+        txtVoiceAssist: "கேளுங்கள்",
+        txtAnalyzingTitle: "ஆய்வு செய்யப்படுகிறது...",
+        txtAnalyzingSubtitle: "படத்தின் தரம் மற்றும் அறிகுறிகளை AI ஆய்வு செய்கிறது",
+        lblConfidence: "AI துல்லியம்",
+        lblGuidance: "மருத்துவ ஆலோசனை:",
+        lblLearnMoreTitle: "இந்த நோய் பற்றி மேலும் அறிய (Learn More)",
+        lblCausesHeading: "முக்கிய காரணங்கள் (Causes):",
+        lblRedFlagsHeading: "ஆபத்து அறிகுறிகள் (Red Flags):",
+        lblPreventionHeading: "தடுப்பு முறைகள் (Prevention):",
+        lblQuestionsHeader: "துல்லியமான ஆய்வுக்கு 3 கேள்விகளுக்கு பதிலளிக்கவும்:",
+        q1Text: "1. உங்களுக்கு காய்ச்சல், நடுக்கம் அல்லது கடுமையான சோர்வு உள்ளதா?",
+        q2Text: "2. கடந்த 24 மணி நேரத்தில் சிவப்பு நிறம் அல்லது வீக்கம் மிக வேகமாக பரவுகிறதா?",
+        q3Text: "3. பாதிக்கப்பட்ட பகுதி தொடும்போது சூடாகவும், தாங்க முடியாத வலியாகவும் உள்ளதா?",
+        optYes: "ஆம் (Yes)",
+        optNo: "இல்லை (No)",
+        lblThreatHeader: "ஆபத்து நிலை (Threat Status):",
+        threatPendingBadge: "நிலுவையில் உள்ளது (Pending)",
+        threatPendingDesc: "துல்லியமான ஆபத்து நிலையை அறிய மேலே உள்ள 3 கேள்விகளுக்கும் பதிலளிக்கவும்.",
+        lblQualityRejectedBadge: "புகைப்படம் தெளிவில்லை (Defective Image)",
+        txtBlurTitle: "புகைப்படம் மங்கலாக உள்ளது (Blurry Photo)",
+        txtBlurDesc: "கேமரா அசைந்ததால் புகைப்படம் மங்கலாக உள்ளது. துல்லியமான பரிசோதனைக்கு மீண்டும் தெளிவான புகைப்படம் எடுக்கவும்.",
+        txtDisruptionTitle: "ஒளி அல்லது வெளிச்சக் கோளாறு (Lighting Issue)",
+        txtDisruptionDesc: "புகைப்படத்தில் அதிக இருள் அல்லது கடுமையான ஃபிளாஷ் வெளிச்சம் உள்ளது. தயவுசெய்து நல்ல வெளிச்சத்தில் படம் எடுக்கவும்.",
+        txtQualityTips: "குறிப்பு: போதுமான வெளிச்சத்தில் கேமராவை அசையாமல் பிடித்து 4-6 அங்குல தூரத்தில் படம் எடுக்கவும்.",
+        btnRetakePhoto: "மீண்டும் படம் எடுக்கவும் (Retake)",
+        lblTermsTitle: "விதிமுறைகள் மற்றும் நிபந்தனைகள் (Terms & Conditions)",
+        termsText1: "<strong>1. மருத்துவ மறுப்பு (Medical Disclaimer):</strong> DermaVision என்பது செயற்கை நுண்ணறிவு (AI) அடிப்படையிலான முதற்கட்ட பரிசோதனை மற்றும் triage உதவியாளர் ஆகும். இது மருத்துவர் அல்லது தோல் மருத்துவ நிபுணரின் நேரடி நோயறிதலுக்கு மாற்றாகாது.",
+        termsText2: "<strong>2. அவசர கால பயன்பாடு (Emergency Use):</strong> தீவிர தொற்று (செல்லுலிடிஸ் போன்றவை) அல்லது கடுமையான ஒவ்வாமை ஏற்பட்டால், இந்த செயலியை சார்ந்திராமல் உடனே மருத்துவமனை அல்லது ஆம்புலன்ஸை (108) அணுகவும்.",
+        termsText3: "<strong>3. தரவு தனியுரிமை (Data Privacy):</strong> பதிவேற்றப்பட்ட அல்லது எடுக்கப்பட்ட புகைப்படங்கள் மருத்துவப் பரிசோதனைக்காக உங்கள் உலாவியில் மட்டுமே செயலாக்கப்படுகின்றன. உங்கள் தனியுரிமை பாதுகாப்பானது.",
+        termsText4: "<strong>4. ஆஷா/சுகாதார பணியாளர் பணிப்பாய்வு (ASHA/ANM Workflow):</strong> கிராமப்புற சுகாதாரப் பணியாளர்கள் (ASHA/ANM) மற்றும் ஆரம்ப சுகாதார நிலையங்களுக்கு (PHC) விரைவான பரிந்துரை மற்றும் ஆவணப்படுத்தலுக்காக இந்த தளம் உருவாக்கப்பட்டுள்ளது.",
+        btnAgreeTerms: "ஏற்கிறேன் / Close",
+        lnkTermsFooter: "விதிமுறைகள் மற்றும் நிபந்தனைகள் (Terms & Conditions)",
+        threatLevels: {
+          critical: {
+            badge: "அதிதீவிர ஆபத்து / CRITICAL THREAT",
+            desc: "கடுமையான தொற்றுக்கான அறிகுறிகள் உள்ளன. உடனே மருத்துவமனைக்கு அல்லது ஆம்புலன்ஸுக்கு செல்லவும்.",
+            tts: "அதிதீவிர ஆபத்து. உடனே மருத்துவமனைக்கு செல்லவும்."
+          },
+          moderate: {
+            badge: "மிதமான ஆபத்து / MODERATE THREAT",
+            desc: "தொற்று பரவும் அபாயம் உள்ளது. 24 மணி நேரத்திற்குள் மருத்துவரை அணுகவும்.",
+            tts: "மிதமான ஆபத்து கண்டறியப்பட்டுள்ளது."
+          },
+          low: {
+            badge: "குறைந்த ஆபத்து / LOW THREAT",
+            desc: "அறிகுறிகள் இயல்பானவை. ஆரம்ப சுகாதார நிலையத்திற்கு செல்லவும்.",
+            tts: "குறைந்த ஆபத்து."
+          }
+        },
+        btnStartOver: "மீண்டும் தொடங்குக",
+        btnCallAsha: "ஆஷா பணியாளரை அழைக்கவும்",
+        btnCallHospital: "அருகிலுள்ள மருத்துவமனை செல்லவும்",
+        btnTeleConsult: "மருத்துவருடன் பேசுக",
+        demoHigh: "அதிதீவிரம் (Cellulitis)",
+        demoMed: "மிதமான (Eczema)",
+        demoLow: "சாதாரண (Rash)",
+        conditions: {
+          cellulitis: {
+            name: "செல்லுலிடிஸ் (தீவிர தொற்று)",
+            severity: "அதிதீவிரம் / HIGH RISK",
+            advice: "இது தீவிர பாக்டீரியா தொற்றாக இருக்கலாம். உடனடியாக அரசு தலைமை மருத்துவமனைக்கு செல்லவும்.",
+            tts: "எச்சரிக்கை! தீவிர தொற்று கண்டறியப்பட்டுள்ளது. உடனே மருத்துவமனைக்கு செல்லவும்.",
+            causes: "காயம் அல்லது பூச்சிக்கடியின் மூலம் பாக்டீரியா தோலுக்குள் ஊடுருவுதல்.",
+            redFlags: "அதிக காய்ச்சல், குளிர் நடுக்கம், சிவப்பு நிறம் வேகமாகப் பரவுதல்.",
+            prevention: "காயங்களை உடனடியாகச் சுத்தம் செய்து கட்டவும். கை அல்லது காலை உயர்த்தி வைக்கவும்."
+          },
+          eczema: {
+            name: "எக்ஸிமா (தோல் அழற்சி)",
+            severity: "மிதமான / MODERATE",
+            advice: "தோலில் வறட்சி மற்றும் அரிப்பு உள்ளது. ஆன்லைன் மூலம் மருத்துவரை அணுகவும்.",
+            tts: "மிதமான பாதிப்பு. மருத்துவரிடம் ஆலோசனை பெறவும்.",
+            causes: "தோல் வறட்சி, கடுமையான சோப்புகள், தூசு அல்லது ஒவ்வாமை.",
+            redFlags: "சீழ் வடிதல், தாங்க முடியாத அரிப்பினால் தூக்கமின்மை.",
+            prevention: "தேங்காய் எண்ணெய் பயன்படுத்தவும். பருத்தி ஆடைகளை அணியவும்."
+          },
+          normal: {
+            name: "சாதாரண தடிப்பு",
+            severity: "குறைந்த ஆபத்து / LOW RISK",
+            advice: "சுத்தமாக பராமரிக்கவும். ஆரம்ப சுகாதார நிலையத்தை அணுகவும்.",
+            tts: "சாதாரண பாதிப்பு. ஆரம்ப சுகாதார நிலையத்திற்கு செல்லவும்.",
+            causes: "வியர்வை, வெப்பம் அல்லது லேசான பூஞ்சை தொற்று.",
+            redFlags: "தடிப்புகள் உடலெங்கும் பரவுதல் அல்லது 5 நாட்களுக்கு மேல் நீடித்தல்.",
+            prevention: "தோலை உலர்ந்த நிலையில் வைத்திருக்கவும்."
+          }
+        }
+      },
+      te: {
+        badgeStep1: "దశ 1",
+        titleStep1: "చర్మం ఫోటో తీయండి",
+        descStep1: "AI తక్షణమే పరీక్షించడానికి ప్రభావిత చర్మం యొక్క స్పష్టమైన ఫోటో తీయండి.",
+        btnCamera: "కెమెరా తెరవండి",
+        btnUpload: "గ్యాలరీ నుండి ఎంచుకోండి",
+        txtVoiceAssist: "వినండి",
+        txtAnalyzingTitle: "చిత్రాన్ని పరిశీలిస్తోంది...",
+        txtAnalyzingSubtitle: "DermaVision AI చిత్ర నాణ్యత మరియు లక్షణాలను విశ్లేషిస్తోంది",
+        lblConfidence: "AI ఖచ్చితత్వం",
+        lblGuidance: "వైద్య సలహా & చర్యలు:",
+        lblLearnMoreTitle: "ఈ వ్యాధి గురించి మరింత తెలుసుకోండి (Learn More)",
+        lblCausesHeading: "ప్రధాన కారణాలు (Causes):",
+        lblRedFlagsHeading: "ప్రమాదకర సంకేతాలు (Red Flags):",
+        lblPreventionHeading: "నివారణ & జాగ్రత్తలు (Prevention):",
+        lblQuestionsHeader: "ఖచ్చితమైన ప్రమాద స్థాయి కోసం 3 ప్రశ్నలకు సమాధానం ఇవ్వండి:",
+        q1Text: "1. మీకు జ్వరం, వణుకు లేదా తీవ్ర బలహీనతగా అనిపిస్తోందా?",
+        q2Text: "2. ఎరుపుదనం లేదా వాపు గత 24 గంటల్లో చాలా వేగంగా వ్యాపిస్తోందా?",
+        q3Text: "3. ప్రభావిత ప్రాంతం తాకినప్పుడు వేడిగా మరియు భరించలేని నొప్పిగా ఉందా?",
+        optYes: "అవును (Yes)",
+        optNo: "కాదు (No)",
+        lblThreatHeader: "ప్రమాద స్థాయి (Threat Status):",
+        threatPendingBadge: "వేచి ఉంది (Pending)",
+        threatPendingDesc: "ఖచ్చితమైన ముప్పు స్థాయిని అంచనా వేయడానికి పైన పేర్కొన్న 3 ప్రశ్నలకు సమాధానం ఇవ్వండి.",
+        lblQualityRejectedBadge: "చిత్రం అస్పష్టంగా ఉంది (Defective Image)",
+        txtBlurTitle: "ఫోటో మసకబారింది (Blurry Image)",
+        txtBlurDesc: "కెమెరా కదలడం వల్ల ఫోటో మసకగా వచ్చింది. ఖచ్చితమైన విశ్లేషణ కోసం స్పష్టమైన ఫోటోను మళ్లీ తీయండి.",
+        txtDisruptionTitle: "వెలుతురు లేదా మెరుపు సమస్య (Lighting Issue)",
+        txtDisruptionDesc: "ఫోటోలో చాలా చీకటి లేదా అధిక ఫ్లాష్ వెలుగు ఉంది. దయచేసి సరైన వెలుతురులో ఫోటో తీయండి.",
+        txtQualityTips: "సూచన: కెమెరాను స్థిరంగా ఉంచి 4-6 అంగుళాల దూరం నుండి స్పష్టమైన వెలుతురులో ఫోటో తీయండి.",
+        btnRetakePhoto: "మళ్ళీ ఫోటో తీయండి (Retake)",
+        lblTermsTitle: "నిబంధనలు మరియు షరతులు (Terms & Conditions)",
+        termsText1: "<strong>1. వైద్య నిరాకరణ (Medical Disclaimer):</strong> DermaVision అనేది కృత్రిమ మేధస్సు (AI) ఆధారిత ప్రాథమిక స్క్రీనింగ్ మరియు ట్రైయేజ్ సహాయక వ్యవస్థ. ఇది వైద్య నిపుణులు, చర్మవ్యాధి నిపుణులు (Dermatologist) లేదా ప్రయోగశాల నిర్ధారణకు ప్రత్యామ్నాయం కాదు.",
+        termsText2: "<strong>2. అత్యవసర పరిస్థితులు (Emergency Use):</strong> తీవ్రమైన ఇన్ఫెక్షన్ (సెల్యులైటిస్ వంటివి) లేదా తీవ్ర అలెర్జీ ఉన్నప్పుడు, ఈ యాప్‌పై ఆధారపడకుండా వెంటనే ఆసుపత్రికి లేదా అత్యవసర సేవలకు (108) కాల్ చేయండి.",
+        termsText3: "<strong>3. డేటా గోప్యత (Data Privacy):</strong> అప్‌లోడ్ చేసిన లేదా తీసిన ఫోటోలు క్లినికల్ సిమ్యులేషన్ కోసం మీ బ్రౌజర్‌లో మాత్రమే ప్రాసెస్ చేయబడతాయి. మీ గోప్యత మా మొదటి ప్రాధాన్యత.",
+        termsText4: "<strong>4. ఆశా/ఆరోగ్య కార్యకర్తల వర్క్‌ఫ్లో (ASHA/ANM Workflow):</strong> గ్రామీణ ఆరోగ్య కార్యకర్తలు (ASHA/ANM) మరియు ప్రాథమిక ఆరోగ్య కేంద్రాలకు (PHC) త్వరిత వైద్య సూచనలు మరియు టెలి-రెఫరల్‌లో సహాయం చేయడానికి ఈ వేదిక రూపొందించబడింది.",
+        btnAgreeTerms: "అంగీకరిస్తున్నాను / Close",
+        lnkTermsFooter: "నిబంధనలు మరియు షరతులు (Terms & Conditions)",
+        threatLevels: {
+          critical: {
+            badge: "అత్యంత ప్రమాదకరం / CRITICAL THREAT",
+            desc: "తీవ్రమైన ఇన్ఫెక్షన్ లక్షణాలు ఉన్నాయి. వెంటనే అంబులెన్స్ లేదా సమీప ఆసుపత్రికి వెళ్లండి.",
+            tts: "అత్యంత ప్రమాదకర ముప్పు. వెంటనే ఆసుపత్రికి వెళ్ళండి."
+          },
+          moderate: {
+            badge: "మధ్యస్థ ముప్పు / MODERATE THREAT",
+            desc: "ఇన్ఫెక్షన్ పెరిగే ప్రమాదం ఉంది. 24 గంటల్లో వైద్యుడిని సంప్రదించండి.",
+            tts: "మధ్యస్థ ప్రమాదం గుర్తించబడింది."
+          },
+          low: {
+            badge: "సాధారణ ముప్పు / LOW THREAT",
+            desc: "లక్షణాలు సాధారణమైనవి. ప్రాథమిక ఆరోగ్య కేంద్రాన్ని (PHC) సంప్రదించండి.",
+            tts: "సాధారణ స్థాయి ముప్పు."
+          }
+        },
+        btnStartOver: "కొత్త స్కాన్ ప్రారంభించండి",
+        btnCallAsha: "ఆశా వర్కర్‌కు కాల్ చేయండి",
+        btnCallHospital: "సమీప ఆసుపత్రి మార్గం",
+        btnTeleConsult: "డాక్టర్‌తో ఆన్‌లైన్ సంప్రదింపు ప్రారంభించండి",
+        demoHigh: "తీవ్రమైనది (Cellulitis)",
+        demoMed: "మధ్యస్థం (Eczema)",
+        demoLow: "సాధారణం (Rash)",
+        conditions: {
+          cellulitis: {
+            name: "సెల్యులైటిస్ (తీవ్రమైన ఇన్ఫెక్షన్)",
+            severity: "అత్యంత ప్రమాదకరం / HIGH RISK",
+            advice: "ఇది తీవ్రమైన బాక్టీరియల్ ఇన్ఫెక్షన్ కావచ్చు. వెంటనే సమీపంలోని పెద్ద ఆసుపత్రికి వెళ్ళండి.",
+            tts: "హెచ్చరిక! ఇది తీవ్రమైన ఇన్ఫెక్షన్ కావచ్చు. వెంటనే ఆసుపత్రికి వెళ్ళండి.",
+            causes: "గాయాలు, కోతలు లేదా కీటకాల కాటు ద్వారా బాక్టీరియా చర్మంలోకి ప్రవేశించడం.",
+            redFlags: "తీవ్ర జ్వరం, వణుకు, ఎరుపు రంగు వేగంగా వ్యాపించడం, బొబ్బలు రావడం.",
+            prevention: "గాయాన్ని యాంటీసెప్టిక్‌తో శుభ్రం చేసి కట్టు కట్టండి. భాగాన్ని ఎత్తులో ఉంచండి."
+          },
+          eczema: {
+            name: "తామర / ఎగ్జిమా",
+            severity: "మధ్యస్థం / MODERATE",
+            advice: "చర్మంపై దురద మరియు పొడిబారడం ఉంది. టెలిమెడిసిన్ ద్వారా వైద్యుడిని సంప్రదించండి.",
+            tts: "ఇది ఎగ్జిమా కావచ్చు. డాక్టర్‌తో మాట్లాడండి.",
+            causes: "చర్మం పొడిబారడం, సబ్బులు, రసాయనాలు లేదా అలర్జీలు.",
+            redFlags: "రక్తం కారడం, పసుపు రంగు చీము రావడం.",
+            prevention: "కొబ్బరి నూనె లేదా మాయిశ్చరైజర్ రాయండి. నూలు దుస్తులు ధరించండి."
+          },
+          normal: {
+            name: "సాధారణ దద్దుర్లు / అలెర్జీ",
+            severity: "సాధారణం / LOW RISK",
+            advice: "ఇది స్వల్ప ఇన్ఫెక్షన్ మాత్రమే. ఆ భాగాన్ని శుభ్రంగా ఉంచుకోండి మరియు ప్రాథమిక కేంద్రానికి వెళ్లండి.",
+            tts: "ఇది సాధారణ సమస్య. శుభ్రత పాటించండి.",
+            causes: "చెమట, వేడి లేదా సాధారణ ఫంగల్ ఇన్ఫెక్షన్.",
+            redFlags: "దద్దుర్లు 5 రోజుల కంటే ఎక్కువ కాలం తగ్గకపోవడం.",
+            prevention: "చర్మాన్ని పొడిగా ఉంచండి, ఇతరుల తువ్వాళ్లు వాడకండి."
+          }
+        }
+      },
+      kn: {
+        badgeStep1: "ಹಂತ 1",
+        titleStep1: "ಚರ್ಮದ ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ",
+        descStep1: "AI ತಕ್ಷಣವೇ ಪರೀಕ್ಷಿಸಲು ಬಾಧಿತ ಚರ್ಮದ ಸ್ಪಷ್ಟವಾದ ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ.",
+        btnCamera: "ಕ್ಯಾಮೆರಾ ತೆರೆಯಿರಿ",
+        btnUpload: "ಗ್ಯಾಲರಿಯಿಂದ ಆರಿಸಿ",
+        txtVoiceAssist: "ಕೇಳಿ",
+        txtAnalyzingTitle: "ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...",
+        txtAnalyzingSubtitle: "DermaVision AI ಗುಣಮಟ್ಟ ಮತ್ತು ರೋಗಲಕ್ಷಣಗಳನ್ನು ವಿಶ್ಲೇಷಿಸುತ್ತಿದೆ",
+        lblConfidence: "AI ನಿಖರತೆ",
+        lblGuidance: "ಶಿಫಾರಸು ಮಾಡಿದ ವೈದ್ಯಕೀಯ ಕ್ರಮ:",
+        lblLearnMoreTitle: "ಈ ಕಾಯಿಲೆಯ ಬಗ್ಗೆ ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ (Learn More)",
+        lblCausesHeading: "ಮುಖ್ಯ ಕಾರಣಗಳು (Causes):",
+        lblRedFlagsHeading: "ಅಪಾಯಕಾರಿ ಲಕ್ಷಣಗಳು (Red Flags):",
+        lblPreventionHeading: "ತಡೆಗಟ್ಟುವಿಕೆ (Prevention):",
+        lblQuestionsHeader: "ನಿಖರ ತಪಾಸಣೆಗಾಗಿ 3 ಪ್ರಶ್ನೆಗಳಿಗೆ ಉತ್ತರಿಸಿ:",
+        q1Text: "1. ನಿಮಗೆ ಜ್ವರ, ಚಳಿ ಅಥವಾ ತೀವ್ರ ದೌರ್ಬಲ್ಯ ಅನಿಸುತ್ತಿದೆಯೇ?",
+        q2Text: "2. ಕೆಂಪಾಗುವಿಕೆ ಅಥವಾ ಊತ ಕಳೆದ 24 ಗಂಟೆಗಳಲ್ಲಿ ವೇಗವಾಗಿ ಹರಡುತ್ತಿದೆಯೇ?",
+        q3Text: "3. ಸ್ಪರ್ಶಿಸಿದಾಗ ಆ ಜಾಗ ಬಿಸಿಯಾಗಿದ್ದು ತೀವ್ರ ನೋವಿದೆಯೇ?",
+        optYes: "ಹೌದು (Yes)",
+        optNo: "ಇಲ್ಲ (No)",
+        lblThreatHeader: "ಅಪಾಯದ ಸ್ಥಿತಿ (Threat Status):",
+        threatPendingBadge: "ಬಾಕಿ ಇದೆ (Pending)",
+        threatPendingDesc: "ಅಪಾಯದ ಮಟ್ಟವನ್ನು ನಿರ್ಣಯಿಸಲು ಮೇಲಿನ 3 ಪ್ರಶ್ನೆಗಳಿಗೆ ಉತ್ತರಿಸಿ.",
+        lblQualityRejectedBadge: "ಚಿತ್ರ ದೋಷಪೂರಿತವಾಗಿದೆ (Image Defect)",
+        txtBlurTitle: "ಚಿತ್ರವು ಮಸುಕಾಗಿದೆ (Blurry Photo)",
+        txtBlurDesc: "ಕ್ಯಾಮೆರಾ ಅಲುಗಾಡಿದ್ದರಿಂದ ಫೋಟೋ ಮಸುಕಾಗಿದೆ. ನಿಖರ ತಪಾಸಣೆಗಾಗಿ ಸ್ಪಷ್ಟ ಫೋಟೋ ಮರುತೆಗೆದುಕೊಳ್ಳಿ.",
+        txtDisruptionTitle: "ಬೆಳಕು ಅಥವಾ ಹೊಳಪಿನ ಸಮಸ್ಯೆ (Lighting Issue)",
+        txtDisruptionDesc: "ಫೋಟೋದಲ್ಲಿ ಹೆಚ್ಚು ಕತ್ತಲೆ ಅಥವಾ ಬೆಳಕಿನ ಹೊಳಪಿದೆ. ದಯವಿಟ್ಟು ಸೂಕ್ತ ಬೆಳಕಿನಲ್ಲಿ ಫೋಟೋ ತೆಗೆಯಿರಿ.",
+        txtQualityTips: "ಸಲಹೆ: ಕ್ಯಾಮೆರಾವನ್ನು ಸ್ಥಿರವಾಗಿ ಹಿಡಿದು 4-6 ಇಂಚು ದೂರದಿಂದ ಸ್ಪಷ್ಟವಾಗಿ ಫೋಟೋ ತೆಗೆಯಿರಿ.",
+        btnRetakePhoto: "ಮತ್ತೆ ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ (Retake)",
+        lblTermsTitle: "ನಿಯಮಗಳು ಮತ್ತು ನಿಬಂಧನೆಗಳು (Terms & Conditions)",
+        termsText1: "<strong>1. ವೈದ್ಯಕೀಯ ಹಕ್ಕು ನಿರಾಕರಣೆ (Medical Disclaimer):</strong> DermaVision ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ (AI) ಆಧಾರಿತ ಪ್ರಾಥಮಿಕ ತಪಾಸಣೆ ಮತ್ತು ವಿಂಗಡಣಾ ಸಹಾಯಕ ವ್ಯವಸ್ಥೆಯಾಗಿದೆ. ಇದು ವೃತ್ತಿಪರ ವೈದ್ಯರು ಅಥವಾ ಚರ್ಮರೋಗ ತಜ್ಞರ (Dermatologist) ರೋಗನಿರ್ಣಯಕ್ಕೆ ಬದಲಿಯಲ್ಲ.",
+        termsText2: "<strong>2. ತುರ್ತು ಸಂದರ್ಭಗಳು (Emergency Use):</strong> ತೀವ್ರ ಸೋಂಕು (ಸೆಲ್ಯುಲೈಟಿಸ್ ಮುಂತಾದವು) ಅಥವಾ ಗಂಭೀರ ಅಲರ್ಜಿ ಇದ್ದಾಗ, ಈ ಆಪ್ ಅನ್ನು ಮಾತ್ರ ನಂಬದೆ ಕೂಡಲೇ ಹತ್ತಿರದ ಆಸ್ಪತ್ರೆಗೆ ಅಥವಾ ತುರ್ತು ಸೇವೆಗೆ (108) ಸಂಪರ್ಕಿಸಿ.",
+        termsText3: "<strong>3. ಡೇಟಾ ಗೌಪ್ಯತೆ (Data Privacy):</strong> ಅಪ್‌ಲೋಡ್ ಮಾಡಿದ ಅಥವಾ ತೆಗೆದ ಫೋಟೋಗಳನ್ನು ವೈದ್ಯಕೀಯ ಸಿಮ್ಯುಲೇಶನ್‌ಗಾಗಿ ನಿಮ್ಮ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಮಾತ್ರ ಸ್ಥಳೀಯವಾಗಿ ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗುತ್ತದೆ.",
+        termsText4: "<strong>4. ಆಶಾ/ಆರೋಗ್ಯ ಕಾರ್ಯಕರ್ತರ ಬಳಕೆ (ASHA/ANM Workflow):</strong> ಗ್ರಾಮೀಣ ಆರೋಗ್ಯ ಕಾರ್ಯಕರ್ತರಿಗೆ (ASHA/ANM) ಮತ್ತು ಪ್ರಾಥಮಿಕ ಆರೋಗ್ಯ ಕೇಂದ್ರಗಳಿಗೆ (PHC) ತ್ವರಿತ ರೆಫರಲ್ ಮಾಡಲು ಈ ವೇದಿಕೆ ಸಹಾಯ ಮಾಡುತ್ತದೆ.",
+        btnAgreeTerms: "ಸಮ್ಮತಿಸುವೆ / Close",
+        lnkTermsFooter: "ನಿಯಮಗಳು ಮತ್ತು ನಿಬಂಧನೆಗಳು (Terms & Conditions)",
+        threatLevels: {
+          critical: {
+            badge: "ತೀವ್ರ ಅಪಾಯ / CRITICAL THREAT",
+            desc: "ತೀವ್ರ ಸೋಂಕಿನ ಲಕ್ಷಣಗಳಿವೆ. ತಕ್ಷಣ ಆಸ್ಪತ್ರೆಗೆ ಅಥವಾ ಅಂಬ್ಯುಲೆನ್ಸ್ ಮೂಲಕ ತೆರಳಿ.",
+            tts: "ತೀವ್ರ ಅಪಾಯದ ಲಕ್ಷಣಗಳಿವೆ. ತಕ್ಷಣ ಆಸ್ಪತ್ರೆಗೆ ಭೇಟಿ ನೀಡಿ."
+          },
+          moderate: {
+            badge: "ಮಧ್ಯಮ ಅಪಾಯ / MODERATE THREAT",
+            desc: "ಸೋಂಕು ಉಲ್ಬಣಿಸುವ ಅಪಾಯವಿದೆ. 24 ಗಂಟೆಗಳಲ್ಲಿ ವೈದ್ಯರನ್ನು ಸಂಪರ್ಕಿಸಿ.",
+            tts: "ಮಧ್ಯಮ ಅಪಾಯ. ವೈದ್ಯರ ಸಲಹೆ ಪಡೆಯಿರಿ."
+          },
+          low: {
+            badge: "ಕಡಿಮೆ ಅಪಾಯ / LOW THREAT",
+            desc: "ಲಕ್ಷಣಗಳು ಸಾಧಾರಣವಾಗಿವೆ. ಪ್ರಾಥಮಿಕ ಆರೋಗ್ಯ ಕೇಂದ್ರಕ್ಕೆ (PHC) ಭೇಟಿ ನೀಡಿ.",
+            tts: "ಕಡಿಮೆ ಅಪಾಯದ ಮಟ್ಟ."
+          }
+        },
+        btnStartOver: "ಹೊಸ ಸ್ಕ್ಯಾನ್ ಪ್ರಾರಂಭಿಸಿ",
+        btnCallAsha: "ಆಶಾ ಕಾರ್ಯಕರ್ತೆಯರಿಗೆ ಕರೆ ಮಾಡಿ",
+        btnCallHospital: "ಹತ್ತಿರದ ಆಸ್ಪತ್ರೆಯ ಮಾರ್ಗ",
+        btnTeleConsult: "ವೈದ್ಯರೊಂದಿಗೆ ಆನ್‌ಲೈನ್ ಸಮಾಲೋಚನೆ",
+        demoHigh: "ಗಂಭೀರ (Cellulitis)",
+        demoMed: "ಮಧ್ಯಮ (Eczema)",
+        demoLow: "ಸಾಮಾನ್ಯ (Rash)",
+        conditions: {
+          cellulitis: {
+            name: "ಸೆಲ್ಯುಲೈಟಿಸ್ (ತೀವ್ರ ಸೋಂಕು)",
+            severity: "ಅತೀವ ಅಪಾಯ / HIGH RISK",
+            advice: "ಇದು ತೀವ್ರ ಬ್ಯಾಕ್ಟೀರಿಯಾ ಸೋಂಕಾಗಿರಬಹುದು. ತಕ್ಷಣವೇ ಹತ್ತಿರದ ಜಿಲ್ಲಾ ಆಸ್ಪತ್ರೆಗೆ ಹೋಗಿ ಚಿಕಿತ್ಸೆ ಪಡೆಯಿರಿ.",
+            tts: "ಎಚ್ಚರಿಕೆ! ಇದು ಗಂಭೀರ ಸೆಲ್ಯುಲೈಟಿಸ್ ಸೋಂಕು ಆಗಿರಬಹುದು. ತಕ್ಷಣ ಆಸ್ಪತ್ರೆಗೆ ತೆರಳಿ.",
+            causes: "ಗಾಯಗಳು, ಕಡಿತ ಅಥವಾ ಕೀಟ ಕಡಿತದ ಮೂಲಕ ಬ್ಯಾಕ್ಟೀರಿಯಾ ಪ್ರವೇಶಿಸುವುದು.",
+            redFlags: "ಹೆಚ್ಚಿನ ಜ್ವರ, ಚಳಿ, ಕೆಂಪು ಬಣ್ಣ ವೇಗವಾಗಿ ಹರಡುವುದು.",
+            prevention: "ಗಾಯವನ್ನು ತಕ್ಷಣ ಸ್ವಚ್ಛಗೊಳಿಸಿ ಬ್ಯಾಂಡೇಜ್ ಹಾಕಿ."
+          },
+          eczema: {
+            name: "ಎಸ್ಜಿಮಾ / ಚರ್ಮದ ಉರಿಯೂತ",
+            severity: "ಮಧ್ಯಮ / MODERATE",
+            advice: "ಚರ್ಮದಲ್ಲಿ ತೀವ್ರ ತುರಿಕೆ ಮತ್ತು ಒಣಗುವಿಕೆ ಇದೆ. ವೈದ್ಯರ ಸಲಹೆಯೊಂದಿಗೆ ಮುಲಾಮು ಹಚ್ಚಿ.",
+            tts: "ಇದು ಎಸ್ಜಿಮಾ ಆಗಿರಬಹುದು. ವೈದ್ಯರ ಸಲಹೆ ಪಡೆಯಿರಿ.",
+            causes: "ಚರ್ಮದ ತೇವಾಂಶ ಕೊರತೆ, ಅಲರ್ಜಿ ಅಥವಾ ಕಠಿಣ ಸಾಬೂನುಗಳ ಬಳಕೆ.",
+            redFlags: "ರಕ್ತ ಬರುವುದು ಅಥವಾ ಹಳದಿ ಕೀವು ಸೋರುವುದು.",
+            prevention: "ತೆಂಗಿನ ಎಣ್ಣೆ ಹಚ್ಚಿ, ಹತ್ತಿ ಬಟ್ಟೆಗಳನ್ನು ಧರಿಸಿ."
+          },
+          normal: {
+            name: "ಸಾಮಾನ್ಯ ದದ್ದು / ಅಲರ್ಜಿ",
+            severity: "ಕಡಿಮೆ ಅಪಾಯ / LOW RISK",
+            advice: "ಇದು ಸಣ್ಣ ಸೋಂಕಿನಂತಿದೆ. ಜಾಗವನ್ನು ಸ್ವಚ್ಛವಾಗಿಡಿ ಮತ್ತು ಪ್ರಾಥಮಿಕ ಕೇಂದ್ರಕ್ಕೆ ತೋರಿಸಿ.",
+            tts: "ಸಾಮಾನ್ಯ ಲಕ್ಷಣ. ಸ್ವಚ್ಛತೆ ಕಾಪಾಡಿ.",
+            causes: "ಬೆವರು, ಶಾಖ ಅಥವಾ ಸಣ್ಣ ಶಿಲೀಂಧ್ರ ಸೋಂಕು.",
+            redFlags: "ದದ್ದುಗಳು 5 ದಿನಗಳಿಗಿಂತ ಹೆಚ್ಚು ಮುಂದುವರಿಯುವುದು.",
+            prevention: "ಚರ್ಮವನ್ನು ಒಣಗಿಸಿಡಿ."
+          }
+        }
+      }
+    };
+
+    let currentLang = 'hi';
+    let currentTriageData = null;
+    let cameraStream = null;
+    let currentFacingMode = "environment";
+    let userAnswers = { q1: null, q2: null, q3: null };
+
+    // --- INITIALIZATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      detectLocationAndDialect();
+    });
+
+    function detectLocationAndDialect() {
+      const geoText = document.getElementById('geoText');
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords;
+            if (latitude >= 20.0 && latitude <= 27.5 && longitude >= 85.5 && longitude <= 89.9) {
+              setLanguage('bn');
+              geoText.innerText = "পশ্চিমবঙ্গ - বাংলা (Bengal Detected)";
+            } else if (latitude >= 11.5 && latitude <= 18.5 && longitude >= 74.0 && longitude <= 78.6) {
+              setLanguage('kn');
+              geoText.innerText = "ಕರ್ನಾಟಕ - ಕನ್ನಡ (Karnataka Detected)";
+            } else if (latitude >= 12.5 && latitude <= 19.9 && longitude >= 76.5 && longitude <= 84.8) {
+              setLanguage('te');
+              geoText.innerText = "భాష: తెలుగు (Andhra/Telangana Detected)";
+            } else if (latitude < 14.0) {
+              setLanguage('ta');
+              geoText.innerText = "தமிழ்நாடு - தமிழ் (Tamil Nadu Detected)";
+            } else {
+              setLanguage('hi');
+              geoText.innerText = "भाषा: हिंदी (Default: Hindi)";
+            }
+          },
+          () => {
+            geoText.innerText = "भाषा: हिंदी (Default: Hindi)";
+            setLanguage('hi');
+          },
+          { timeout: 3500 }
+        );
+      } else {
+        setLanguage('hi');
+      }
+    }
+
+    // --- CAMERA PIPELINE ---
+    function initiateCameraTrigger() {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        openLiveCamera();
+      } else {
+        document.getElementById('nativeCameraFallback').click();
+      }
+    }
+
+    async function openLiveCamera() {
+      const cameraModal = document.getElementById('cameraModal');
+      const video = document.getElementById('cameraVideo');
+
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+      }
+
+      const constraints = {
+        video: {
+          facingMode: { ideal: currentFacingMode },
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        },
+        audio: false
+      };
+
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = cameraStream;
+        await video.play();
+        cameraModal.classList.remove('hidden');
+        cameraModal.classList.add('flex');
+        lucide.createIcons();
+      } catch (err) {
+        console.warn("Falling back to native capture input", err);
+        closeLiveCamera();
+        document.getElementById('nativeCameraFallback').click();
+      }
+    }
+
+    function closeLiveCamera() {
+      const cameraModal = document.getElementById('cameraModal');
+      const video = document.getElementById('cameraVideo');
+
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+      if (video) video.srcObject = null;
+      cameraModal.classList.add('hidden');
+      cameraModal.classList.remove('flex');
+    }
+
+    function flipCamera() {
+      currentFacingMode = (currentFacingMode === "environment") ? "user" : "environment";
+      openLiveCamera();
+    }
+
+    function captureCameraSnapshot() {
+      const video = document.getElementById('cameraVideo');
+      const canvas = document.getElementById('cameraCanvas');
+      
+      if (!video || !cameraStream) return;
+
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const capturedImageDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      closeLiveCamera();
+
+      validateImageQualityAndProceed(capturedImageDataUrl, 'cellulitis');
+    }
+
+    // --- COMPUTER VISION BLUR & DISRUPTION ANALYZER ---
+    function validateImageQualityAndProceed(imgDataUrl, simulatedConditionFallback) {
+      const img = new Image();
+      img.onload = () => {
+        const qualityResult = analyzeImageQuality(img);
+        
+        if (!qualityResult.isValid) {
+          showQualityWarningModal(qualityResult.issueType);
+          return;
+        }
+
+        runTriageSimulation(simulatedConditionFallback, imgDataUrl);
+      };
+      img.src = imgDataUrl;
+    }
+
+    function analyzeImageQuality(imageElement) {
+      const canvas = document.getElementById('cvAnalyzerCanvas');
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      
+      const w = 240;
+      const h = Math.round((imageElement.height / imageElement.width) * w) || 180;
+      canvas.width = w;
+      canvas.height = h;
+
+      ctx.drawImage(imageElement, 0, 0, w, h);
+      const imgData = ctx.getImageData(0, 0, w, h);
+      const data = imgData.data;
+
+      const gray = new Float32Array(w * h);
+      let sumLuminance = 0;
+      let overexposedCount = 0;
+      let underexposedCount = 0;
+      const totalPixels = w * h;
+
+      for (let i = 0; i < totalPixels; i++) {
+        const r = data[i * 4];
+        const g = data[i * 4 + 1];
+        const b = data[i * 4 + 2];
+        const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+        gray[i] = lum;
+        sumLuminance += lum;
+
+        if (lum > 245) overexposedCount++;
+        if (lum < 15) underexposedCount++;
+      }
+
+      const avgLuminance = sumLuminance / totalPixels;
+      const overexposedRatio = overexposedCount / totalPixels;
+      const underexposedRatio = underexposedCount / totalPixels;
+
+      if (avgLuminance < 30 || underexposedRatio > 0.65 || overexposedRatio > 0.45 || avgLuminance > 230) {
+        return { isValid: false, issueType: 'disruption' };
+      }
+
+      let lapSum = 0;
+      let lapSqSum = 0;
+      let edgeCount = 0;
+
+      for (let y = 1; y < h - 1; y++) {
+        const yOffset = y * w;
+        for (let x = 1; x < w - 1; x++) {
+          const idx = yOffset + x;
+          const lapVal = 
+            gray[idx - w] +
+            gray[idx + w] +
+            gray[idx - 1] +
+            gray[idx + 1] -
+            (4 * gray[idx]);
+
+          lapSum += lapVal;
+          lapSqSum += lapVal * lapVal;
+          edgeCount++;
+        }
+      }
+
+      const meanLap = lapSum / edgeCount;
+      const laplacianVariance = (lapSqSum / edgeCount) - (meanLap * meanLap);
+
+      if (laplacianVariance < 38.0) {
+        return { isValid: false, issueType: 'blur' };
+      }
+
+      return { isValid: true, issueType: 'none' };
+    }
+
+    function showQualityWarningModal(issueType) {
+      const modal = document.getElementById('qualityWarningModal');
+      const title = document.getElementById('txtQualityErrorTitle');
+      const desc = document.getElementById('txtQualityErrorDesc');
+      const dict = translations[currentLang] || translations.hi;
+
+      if (issueType === 'blur') {
+        title.innerText = dict.txtBlurTitle;
+        desc.innerText = dict.txtBlurDesc;
+      } else {
+        title.innerText = dict.txtDisruptionTitle;
+        desc.innerText = dict.txtDisruptionDesc;
+      }
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      lucide.createIcons();
+
+      speakText(`${title.innerText}. ${desc.innerText}`, currentLang);
+    }
+
+    function closeQualityWarningAndRetake() {
+      const modal = document.getElementById('qualityWarningModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      
+      const fileInput = document.getElementById('nativeFileInput');
+      if (fileInput) fileInput.value = '';
+      const camInput = document.getElementById('nativeCameraFallback');
+      if (camInput) camInput.value = '';
+
+      initiateCameraTrigger();
+    }
+
+    // --- TERMS MODAL CONTROL ---
+    function toggleTermsModal(show) {
+      const modal = document.getElementById('termsModal');
+      if (show) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        lucide.createIcons();
+      } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    // --- LANGUAGE SWITCHING (WITH RTL DETECTION) ---
+    function changeLanguage(langKey) {
+      if (!translations[langKey]) langKey = 'en';
+      setLanguage(langKey);
+    }
+
+    function setLanguage(langKey) {
+      currentLang = langKey;
+      document.getElementById('languageSelect').value = langKey;
+      const dict = translations[langKey] || translations.en;
+
+      if (langKey === 'ar') {
+        document.documentElement.setAttribute('dir', 'rtl');
+      } else {
+        document.documentElement.setAttribute('dir', 'ltr');
+      }
+
+      document.getElementById('badgeStep1').innerText = dict.badgeStep1;
+      document.getElementById('titleStep1').innerText = dict.titleStep1;
+      document.getElementById('descStep1').innerText = dict.descStep1;
+      document.getElementById('btnCamera').innerText = dict.btnCamera;
+      document.getElementById('btnUpload').innerText = dict.btnUpload;
+      document.getElementById('txtVoiceAssist').innerText = dict.txtVoiceAssist;
+      document.getElementById('txtAnalyzingTitle').innerText = dict.txtAnalyzingTitle;
+      document.getElementById('txtAnalyzingSubtitle').innerText = dict.txtAnalyzingSubtitle;
+      document.getElementById('lblConfidence').innerText = dict.lblConfidence;
+      document.getElementById('lblGuidance').innerText = dict.lblGuidance;
+      document.getElementById('lblLearnMoreTitle').innerText = dict.lblLearnMoreTitle;
+      document.getElementById('lblCausesHeading').innerText = dict.lblCausesHeading;
+      document.getElementById('lblRedFlagsHeading').innerText = dict.lblRedFlagsHeading;
+      document.getElementById('lblPreventionHeading').innerText = dict.lblPreventionHeading;
+      document.getElementById('lblQuestionsHeader').innerText = dict.lblQuestionsHeader;
+      document.getElementById('q1Text').innerText = dict.q1Text;
+      document.getElementById('q2Text').innerText = dict.q2Text;
+      document.getElementById('q3Text').innerText = dict.q3Text;
+      document.getElementById('optYes1').innerText = dict.optYes;
+      document.getElementById('optNo1').innerText = dict.optNo;
+      document.getElementById('optYes2').innerText = dict.optYes;
+      document.getElementById('optNo2').innerText = dict.optNo;
+      document.getElementById('optYes3').innerText = dict.optYes;
+      document.getElementById('optNo3').innerText = dict.optNo;
+      document.getElementById('lblThreatHeader').innerText = dict.lblThreatHeader;
+      document.getElementById('lblQualityRejectedBadge').innerText = dict.lblQualityRejectedBadge;
+      document.getElementById('txtQualityTips').innerText = dict.txtQualityTips;
+      document.getElementById('btnRetakePhoto').innerText = dict.btnRetakePhoto;
+      document.getElementById('lblTermsTitle').innerText = dict.lblTermsTitle;
+      document.getElementById('termsText1').innerHTML = dict.termsText1;
+      document.getElementById('termsText2').innerHTML = dict.termsText2;
+      document.getElementById('termsText3').innerHTML = dict.termsText3;
+      document.getElementById('termsText4').innerHTML = dict.termsText4;
+      document.getElementById('btnAgreeTerms').innerText = dict.btnAgreeTerms;
+      document.getElementById('lnkTermsFooter').innerText = dict.lnkTermsFooter;
+      document.getElementById('btnStartOver').innerText = dict.btnStartOver;
+      document.getElementById('demoHigh').innerText = dict.demoHigh;
+      document.getElementById('demoMed').innerText = dict.demoMed;
+      document.getElementById('demoLow').innerText = dict.demoLow;
+
+      if (currentTriageData) {
+        renderTriageResult(currentTriageData.key, currentTriageData.imgSrc);
+        recalculateThreatLevel();
+      }
+      lucide.createIcons();
+    }
+
+    // --- QUESTION LOGIC & THREAT EVALUATION ---
+    function setQuestionAnswer(qIndex, val) {
+      userAnswers['q' + qIndex] = val;
+      
+      const yesBtn = document.getElementById('btnQ' + qIndex + 'Yes');
+      const noBtn = document.getElementById('btnQ' + qIndex + 'No');
+
+      if (val === 1) {
+        yesBtn.className = `q-btn-${qIndex} py-2 px-3 rounded-xl border text-xs font-bold bg-brandTeal text-white border-brandTeal shadow-sm`;
+        noBtn.className = `q-btn-${qIndex} py-2 px-3 rounded-xl border text-xs font-bold border-slate-300 bg-white text-slate-700 hover:border-brandTeal transition`;
+      } else {
+        noBtn.className = `q-btn-${qIndex} py-2 px-3 rounded-xl border text-xs font-bold bg-slate-700 text-white border-slate-700 shadow-sm`;
+        yesBtn.className = `q-btn-${qIndex} py-2 px-3 rounded-xl border text-xs font-bold border-slate-300 bg-white text-slate-700 hover:border-brandTeal transition`;
+      }
+
+      recalculateThreatLevel();
+    }
+
+    function recalculateThreatLevel() {
+      const dict = translations[currentLang] || translations.hi;
+      const { q1, q2, q3 } = userAnswers;
+
+      if (q1 === null || q2 === null || q3 === null) {
+        document.getElementById('threatLevelBox').className = "mt-2 p-3.5 rounded-2xl border transition-all duration-300 flex items-start gap-3 bg-slate-100 border-slate-200";
+        document.getElementById('threatIconHolder').className = "w-8 h-8 rounded-xl flex items-center justify-center text-white bg-slate-400 flex-shrink-0 mt-0.5";
+        document.getElementById('threatIconHolder').innerHTML = `<i data-lucide="info" class="w-5 h-5"></i>`;
+        document.getElementById('txtThreatStatusBadge').className = "text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-slate-200 text-slate-700";
+        document.getElementById('txtThreatStatusBadge').innerText = dict.threatPendingBadge;
+        document.getElementById('txtThreatDescription').innerText = dict.threatPendingDesc;
+        lucide.createIcons();
+        return;
+      }
+
+      const score = q1 + q2 + q3;
+      let evaluatedLevel = 'low';
+
+      if (score >= 2 || q1 === 1 || q2 === 1) {
+        evaluatedLevel = 'critical';
+      } else if (score === 1 || q3 === 1) {
+        evaluatedLevel = 'moderate';
+      } else {
+        evaluatedLevel = 'low';
+      }
+
+      const threatData = dict.threatLevels[evaluatedLevel];
+      const threatBox = document.getElementById('threatLevelBox');
+      const iconHolder = document.getElementById('threatIconHolder');
+      const statusBadge = document.getElementById('txtThreatStatusBadge');
+      const descText = document.getElementById('txtThreatDescription');
+
+      if (evaluatedLevel === 'critical') {
+        threatBox.className = "mt-2 p-3.5 rounded-2xl border transition-all duration-300 flex items-start gap-3 bg-red-50 border-brandAlertRed/40 shadow-sm";
+        iconHolder.className = "w-8 h-8 rounded-xl flex items-center justify-center text-white bg-brandAlertRed flex-shrink-0 mt-0.5 shadow-md shadow-red-200";
+        iconHolder.innerHTML = `<i data-lucide="alert-triangle" class="w-5 h-5 animate-pulse"></i>`;
+        statusBadge.className = "text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-red-100 text-brandAlertRed border border-red-200";
+      } else if (evaluatedLevel === 'moderate') {
+        threatBox.className = "mt-2 p-3.5 rounded-2xl border transition-all duration-300 flex items-start gap-3 bg-amber-50 border-brandWarningYellow/40 shadow-sm";
+        iconHolder.className = "w-8 h-8 rounded-xl flex items-center justify-center text-white bg-brandWarningYellow flex-shrink-0 mt-0.5 shadow-md shadow-amber-200";
+        iconHolder.innerHTML = `<i data-lucide="shield-alert" class="w-5 h-5"></i>`;
+        statusBadge.className = "text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-amber-100 text-brandWarningYellow border border-amber-200";
+      } else {
+        threatBox.className = "mt-2 p-3.5 rounded-2xl border transition-all duration-300 flex items-start gap-3 bg-green-50 border-brandSuccessGreen/40 shadow-sm";
+        iconHolder.className = "w-8 h-8 rounded-xl flex items-center justify-center text-white bg-brandSuccessGreen flex-shrink-0 mt-0.5 shadow-md shadow-green-200";
+        iconHolder.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5"></i>`;
+        statusBadge.className = "text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-green-100 text-brandSuccessGreen border border-green-200";
+      }
+
+      statusBadge.innerText = threatData.badge;
+      descText.innerText = threatData.desc;
+      lucide.createIcons();
+
+      speakText(threatData.tts, currentLang);
+    }
+
+    // --- ACCURATE SPEECH ENGINE (TTS) ---
+    function speakText(text, lang) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      const voiceLangMap = {
+        hi: 'hi-IN',
+        en: 'en-IN',
+        ar: 'ar-SA',
+        bn: 'bn-IN',
+        ta: 'ta-IN',
+        te: 'te-IN',
+        kn: 'kn-IN'
+      };
+      utterance.lang = voiceLangMap[lang] || 'hi-IN';
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function speakCurrentView() {
+      const dict = translations[currentLang] || translations.hi;
+      speakText(`${dict.titleStep1}. ${dict.descStep1}`, currentLang);
+    }
+
+    function speakResult() {
+      if (!currentTriageData) return;
+      const dict = translations[currentLang] || translations.hi;
+      speakText(dict.conditions[currentTriageData.key].tts, currentLang);
+    }
+
+    function speakQuestions() {
+      const dict = translations[currentLang] || translations.hi;
+      speakText(`${dict.q1Text}. ${dict.q2Text}. ${dict.q3Text}`, currentLang);
+    }
+
+    // --- TRIAGE ENTRY POINTS & PRESETS ---
+    function handleImageSelection(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        validateImageQualityAndProceed(e.target.result, 'cellulitis');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function simulateCondition(conditionKey) {
+      const mockImages = {
+        cellulitis: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=300&q=80',
+        eczema: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=300&q=80',
+        normal: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=300&q=80'
+      };
+      runTriageSimulation(conditionKey, mockImages[conditionKey]);
+    }
+
+    function runTriageSimulation(conditionKey, imgSrc) {
+      document.getElementById('step1-upload').classList.add('hidden');
+      document.getElementById('step2-loading').classList.remove('hidden');
+      document.getElementById('step3-result').classList.add('hidden');
+
+      setTimeout(() => {
+        document.getElementById('step2-loading').classList.add('hidden');
+        document.getElementById('step3-result').classList.remove('hidden');
+        renderTriageResult(conditionKey, imgSrc);
+      }, 1300);
+    }
+
+    function renderTriageResult(conditionKey, imgSrc) {
+      currentTriageData = { key: conditionKey, imgSrc: imgSrc };
+      const dict = translations[currentLang] || translations.hi;
+      const condition = dict.conditions[conditionKey];
+
+      const triageCard = document.getElementById('triageCard');
+      const iconWrapper = document.getElementById('triageIconWrapper');
+      const badge = document.getElementById('triageSeverityBadge');
+      const name = document.getElementById('triageConditionName');
+      const advice = document.getElementById('triageClinicalAdvice');
+      const previewImg = document.getElementById('scannedImagePreview');
+      const actionContainer = document.getElementById('actionContainer');
+
+      document.getElementById('txtConditionCauses').innerText = condition.causes;
+      document.getElementById('txtConditionRedFlags').innerText = condition.redFlags;
+      document.getElementById('txtConditionPrevention').innerText = condition.prevention;
+
+      previewImg.src = imgSrc;
+      name.innerText = condition.name;
+      badge.innerText = condition.severity;
+      advice.innerText = condition.advice;
+
+      if (conditionKey === 'cellulitis') {
+        triageCard.className = "bg-white rounded-3xl p-5 sm:p-7 border-2 border-brandAlertRed shadow-2xl shadow-red-100 space-y-5";
+        iconWrapper.className = "w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center bg-brandAlertRed text-white shadow-lg shadow-red-200 flex-shrink-0";
+        iconWrapper.innerHTML = `<i data-lucide="alert-triangle" class="w-7 h-7 sm:w-8 sm:h-8"></i>`;
+        badge.className = "text-[10px] sm:text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-red-100 text-brandAlertRed border border-red-200";
+
+        actionContainer.innerHTML = `
+          <a href="tel:108" class="w-full flex items-center justify-center gap-2.5 bg-brandAlertRed hover:bg-red-700 text-white font-black py-3.5 px-5 rounded-2xl shadow-lg shadow-red-300 transition active:scale-95 text-sm sm:text-base">
+            <i data-lucide="phone-call" class="w-5 h-5 animate-bounce flex-shrink-0"></i>
+            <span>108 / Emergency Ambulance</span>
+          </a>
+          <a href="https://maps.google.com/?q=District+Hospital" target="_blank" class="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-black text-white font-bold py-3 px-5 rounded-xl transition text-xs sm:text-sm">
+            <i data-lucide="map-pin" class="w-4 h-4 text-brandPeach flex-shrink-0"></i>
+            <span class="truncate">${dict.btnCallHospital}</span>
+          </a>
+          <a href="tel:18001801104" class="w-full flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-brandNavy font-bold py-2.5 px-4 rounded-xl transition text-xs border border-slate-300">
+            <i data-lucide="user-check" class="w-4 h-4 text-brandTeal flex-shrink-0"></i>
+            <span class="truncate">${dict.btnCallAsha}</span>
+          </a>
+        `;
+      } else if (conditionKey === 'eczema') {
+        triageCard.className = "bg-white rounded-3xl p-5 sm:p-7 border-2 border-brandWarningYellow shadow-xl shadow-amber-50 space-y-5";
+        iconWrapper.className = "w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center bg-brandWarningYellow text-white shadow-lg shadow-amber-200 flex-shrink-0";
+        iconWrapper.innerHTML = `<i data-lucide="stethoscope" class="w-7 h-7 sm:w-8 sm:h-8"></i>`;
+        badge.className = "text-[10px] sm:text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-100 text-brandWarningYellow border border-amber-200";
+
+        actionContainer.innerHTML = `
+          <button onclick="alert('Connecting to Telemedicine Doctor...')" class="w-full flex items-center justify-center gap-2.5 bg-brandTeal hover:bg-brandTeal/90 text-white font-bold py-3.5 px-5 rounded-2xl shadow-lg shadow-brandTeal/20 transition active:scale-95 text-sm sm:text-base">
+            <i data-lucide="video" class="w-5 h-5 flex-shrink-0"></i>
+            <span>${dict.btnTeleConsult}</span>
+          </button>
+          <a href="tel:104" class="w-full flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-brandNavy font-bold py-2.5 px-4 rounded-xl transition text-xs border border-slate-300">
+            <i data-lucide="phone" class="w-4 h-4 text-brandTeal flex-shrink-0"></i>
+            <span>Health Helpline 104</span>
+          </a>
+        `;
+      } else {
+        triageCard.className = "bg-white rounded-3xl p-5 sm:p-7 border-2 border-brandSuccessGreen shadow-xl shadow-green-50 space-y-5";
+        iconWrapper.className = "w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center bg-brandSuccessGreen text-white shadow-lg shadow-green-200 flex-shrink-0";
+        iconWrapper.innerHTML = `<i data-lucide="shield-check" class="w-7 h-7 sm:w-8 sm:h-8"></i>`;
+        badge.className = "text-[10px] sm:text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-green-100 text-brandSuccessGreen border border-green-200";
+
+        actionContainer.innerHTML = `
+          <div class="bg-green-50 p-2.5 rounded-xl border border-green-200 text-center text-xs text-green-800 font-semibold">
+            Primary Health Center (PHC) consultation recommended.
+          </div>
+          <button onclick="resetApp()" class="w-full bg-slate-100 hover:bg-slate-200 text-brandNavy font-bold py-3 px-5 rounded-xl transition text-xs sm:text-sm">
+            ${dict.btnStartOver}
+          </button>
+        `;
+      }
+
+      lucide.createIcons();
+      speakResult();
+    }
+
+    function resetApp() {
+      currentTriageData = null;
+      userAnswers = { q1: null, q2: null, q3: null };
+
+      [1, 2, 3].forEach(idx => {
+        const y = document.getElementById('btnQ' + idx + 'Yes');
+        const n = document.getElementById('btnQ' + idx + 'No');
+        if (y && n) {
+          y.className = `q-btn-${idx} py-2 px-3 rounded-xl border text-xs font-bold border-slate-300 bg-white text-slate-700 hover:border-brandTeal transition`;
+          n.className = `q-btn-${idx} py-2 px-3 rounded-xl border text-xs font-bold border-slate-300 bg-white text-slate-700 hover:border-brandTeal transition`;
+        }
+      });
+
+      document.getElementById('step3-result').classList.add('hidden');
+      document.getElementById('step2-loading').classList.add('hidden');
+      document.getElementById('step1-upload').classList.remove('hidden');
+      
+      const details = document.getElementById('learnMoreDetails');
+      if (details) details.removeAttribute('open');
+
+      recalculateThreatLevel();
+    }
+  </script>
+</body>
+</html>
