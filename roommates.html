@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoomieWallet - Manage Roommates</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="animate-header">
+            <h1>RoomieWallet</h1>
+            <nav>
+                <a href="index.html">Dashboard</a>
+                <a href="add-expense.html">Add Expense</a>
+                <a href="roommates.html" class="active">Roommates</a>
+                <a href="timetable.html">Timetable</a>
+                <a href="contacts.html">Contacts 🚨</a>
+            </nav>
+        </header>
+
+        <main class="animate-content" style="display: flex; justify-content: center;">
+            <div class="card" style="width: 100%; max-width: 500px;">
+                <h2>Manage Roommates</h2>
+                
+                <form id="addRoommateForm" style="display: flex; gap: 15px; margin-bottom: 30px;">
+                    <input type="text" id="newRoommateName" placeholder="Enter roommate's name..." required style="flex: 1;">
+                    <button type="submit" class="btn-primary" style="width: auto;">Add</button>
+                </form>
+
+                <ul class="roommate-list" id="roommateList">
+                    <!-- Default Roommates -->
+                    <li>
+                        <span>Anshul</span>
+                        <button class="btn-remove">Remove</button>
+                    </li>
+                    <li>
+                        <span>Kavish</span>
+                        <button class="btn-remove">Remove</button>
+                    </li>
+                    <li>
+                        <span>Sanvi</span>
+                        <button class="btn-remove">Remove</button>
+                    </li>
+                    <li>
+                        <span>Anvita</span>
+                        <button class="btn-remove">Remove</button>
+                    </li>
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript for dynamic Add/Remove functionality -->
+    <script>
+        // Get the elements from the DOM
+        const form = document.getElementById('addRoommateForm');
+        const input = document.getElementById('newRoommateName');
+        const list = document.getElementById('roommateList');
+
+        // Function to add a new roommate
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevents page reload
+            
+            const roommateName = input.value.trim();
+            
+            if (roommateName !== "") {
+                // Create new list item (li)
+                const li = document.createElement('li');
+                
+                // Create span for the name
+                const span = document.createElement('span');
+                span.textContent = roommateName;
+                
+                // Create remove button
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = 'Remove';
+                removeBtn.className = 'btn-remove';
+                
+                // Append span and button to the li
+                li.appendChild(span);
+                li.appendChild(removeBtn);
+                
+                // Append the new li to the unordered list
+                list.appendChild(li);
+                
+                // Clear the input field
+                input.value = "";
+            }
+        });
+
+        // Function to remove a roommate using Event Delegation
+        list.addEventListener('click', function(event) {
+            // Check if the clicked element has the class 'btn-remove'
+            if (event.target.classList.contains('btn-remove')) {
+                // Remove the parent <li> element
+                const liToRemove = event.target.parentElement;
+                list.removeChild(liToRemove);
+            }
+        });
+    </script>
+</body>
+</html>

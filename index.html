@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoomieWallet - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="animate-header">
+            <h1>RoomieWallet</h1>
+            <nav>
+                <a href="index.html" class="active">Dashboard</a>
+                <a href="add-expense.html">Add Expense</a>
+                <a href="roommates.html">Roommates</a>
+                <a href="timetable.html">Timetable</a>
+                <a href="contacts.html">Contacts 🚨</a>
+            </nav>
+        </header>
+
+        <main class="animate-content">
+            <!-- Overview Cards -->
+            <div class="dashboard-overview">
+                <div class="overview-card">
+                    <h3>Total Shared Expenses</h3>
+                    <p>₹7,400</p>
+                </div>
+                <div class="overview-card">
+                    <h3>Total Expenses Logged</h3>
+                    <p>3</p>
+                </div>
+            </div>
+            <div class="dashboard-widgets">
+                <!-- Left: Diwali Party Savings -->
+                <div class="card widget-card">
+                    <h2>🪔 Diwali Party Fund</h2>
+                    <div class="fund-progress">
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: 45%;"></div>
+                        </div>
+                        <p class="fund-text">₹4,500 / ₹10,000 Saved</p>
+                    </div>
+                    <form class="widget-form">
+                        <input type="number" placeholder="Amount (₹)" required>
+                        <button type="submit" class="btn-primary">Add</button>
+                    </form>
+                </div>
+
+                <!-- Right: To-Do List -->
+                <div class="card widget-card">
+                    <h2>📝 To-Do List</h2>
+                    <ul class="todo-list" id="todoList">
+                        <li><label><input type="checkbox"> <span>Order sweets and snacks</span></label></li>
+                        <li><label><input type="checkbox"> <span>Buy Diyas and lights</span></label></li>
+                        <li><label><input type="checkbox"> <span>Deep clean the living room</span></label></li>
+                    </ul>
+                    <form class="widget-form" id="addTodoForm">
+                        <input type="text" id="todoInput" placeholder="New task..." required>
+                        <button type="submit" class="btn-primary">Add</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Expense Ledger -->
+            <div class="card">
+                <h2>Expense Ledger</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Paid By</th>
+                            <th>Amount</th>
+                            <th>Split</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2026-10-25</td>
+                            <td>November Rent</td>
+                            <td><span class="category-tag">Rent</span></td>
+                            <td>Sanvi</td>
+                            <td>₹1,500</td>
+                            <td>Equally</td>
+                        </tr>
+                        <tr>
+                            <td>2026-10-22</td>
+                            <td>Electricity Bill</td>
+                            <td><span class="category-tag">Bills</span></td>
+                            <td>Kavish</td>
+                            <td>₹3,500</td>
+                            <td>Equally</td>
+                        </tr>
+                        <tr>
+                            <td>2026-10-20</td>
+                            <td>Weekly Groceries</td>
+                            <td><span class="category-tag">Fast Commerce</span></td>
+                            <td>Anshul</td>
+                            <td>₹1,200</td>
+                            <td>Equally</td>
+                        </tr>
+                         <tr>
+                            <td>2026-10-20</td>
+                            <td>petrol bill</td>
+                            <td><span class="category-tag">Bills</span></td>
+                            <td>Anvita</td>
+                            <td>₹1,200</td>
+                            <td>Equally</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Optional JS to make the To-Do list functional -->
+    <script>
+        document.getElementById('addTodoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = document.getElementById('todoInput');
+            const task = input.value.trim();
+            if (task) {
+                const li = document.createElement('li');
+                li.innerHTML = `<label><input type="checkbox"> <span>${task}</span></label>`;
+                document.getElementById('todoList').appendChild(li);
+                input.value = '';
+            }
+        });
+    </script>
+</body>
+</html>

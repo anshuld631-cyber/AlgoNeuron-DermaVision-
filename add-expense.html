@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoomieWallet - Add Expense</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="animate-header">
+            <h1>RoomieWallet</h1>
+            <nav>
+                <a href="index.html">Dashboard</a>
+                <a href="add-expense.html" class="active">Add Expense</a>
+                <a href="roommates.html">Roommates</a>
+                <a href="timetable.html">Timetable</a>
+                <a href="contacts.html">Contacts 🚨</a>
+            </nav>
+        </header>
+
+        <main class="animate-content">
+            <div class="card">
+                <h2>Add New Expense</h2>
+                <form action="index.html" method="get">
+                    <div class="form-group">
+                        <label for="desc">Description</label>
+                        <input type="text" id="desc" name="description" placeholder="e.g. Zepto Groceries" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Amount (₹)</label>
+                        <input type="number" id="amount" name="amount" placeholder="0.00" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" name="category">
+                            <option value="Fast Commerce">Fast Commerce</option>
+                            <option value="Rent">Rent</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Split Method</label>
+                        <div style="display: flex; gap: 20px; align-items: center; margin-top: 10px;">
+                            <label style="font-weight: normal; cursor: pointer;">
+                                <input type="radio" name="split" value="Equally" checked> Equally
+                            </label>
+                            <label style="font-weight: normal; cursor: pointer;">
+                                <input type="radio" name="split" value="Exact"> Exact Amounts
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="paidBy">Who Paid?</label>
+                        <select id="paidBy" name="paidBy">
+                            <option value="Anshul">Anshul</option>
+                            <option value="Kavish">Kavish</option>
+                            <option value="Sanvi">Sanvi</option>
+                            <option value="Anvita">Anvita</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Save Expense</button>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
